@@ -1,0 +1,115 @@
+<DependencyUpdatesReport>
+  <summary>
+    <usingLastVersion>1</usingLastVersion>
+    <nextVersionAlailable>0</nextVersionAlailable>
+    <nextIncremetalAvailable>2</nextIncremetalAvailable>
+    <nextMinorAvailable>3</nextMinorAvailable>
+    <nextMajorAvailable>4</nextMajorAvailable>
+  </summary>
+  <dependencyManagements>
+    <dependencyManagement>
+      <groupId>io.mathan.test</groupId>
+      <artifactId>dependencymanagement-with-minor</artifactId>
+      <scope>null</scope>
+      <classifier>null</classifier>
+      <type>jar</type>
+      <currentVersion>4.0.0</currentVersion>
+      <nextVersion>4.1.0</nextVersion>
+      <minors>
+        <minor>4.1.0</minor>
+        <minor>4.1.1</minor>
+        <minor>4.1.2</minor>
+      </minors>
+      <status>minor available</status>
+    </dependencyManagement>
+    <dependencyManagement>
+      <groupId>io.mathan.test</groupId>
+      <artifactId>dependencymanagement-with-major</artifactId>
+      <scope>null</scope>
+      <classifier>null</classifier>
+      <type>pom</type>
+      <currentVersion>1.4.0</currentVersion>
+      <nextVersion>2.0.0</nextVersion>
+      <majors>
+        <major>2.0.0</major>
+        <major>2.1.0</major>
+      </majors>
+      <status>major available</status>
+    </dependencyManagement>
+    <dependencyManagement>
+      <groupId>io.mathan.test</groupId>
+      <artifactId>dependencymanagement-with-incremental</artifactId>
+      <scope>null</scope>
+      <classifier>null</classifier>
+      <type>pom</type>
+      <currentVersion>4.2.2</currentVersion>
+      <nextVersion>4.2.3</nextVersion>
+      <incrementals>
+        <incremental>4.2.3</incremental>
+      </incrementals>
+      <status>incremental available</status>
+    </dependencyManagement>
+    <dependencyManagement>
+      <groupId>io.mathan.test</groupId>
+      <artifactId>dependencymanagement-with-none</artifactId>
+      <scope>null</scope>
+      <classifier>null</classifier>
+      <type>pom</type>
+      <currentVersion>3.0.9</currentVersion>
+      <status>no new available</status>
+    </dependencyManagement>
+  </dependencyManagements>
+  <dependencies>
+    <dependency>
+      <groupId>io.mathan.test</groupId>
+      <artifactId>dependency-with-minor</artifactId>
+      <scope>null</scope>
+      <classifier>null</classifier>
+      <type>pom</type>
+      <currentVersion>4.0.0</currentVersion>
+      <nextVersion>4.1.0</nextVersion>
+      <minors>
+        <minor>4.1.0</minor>
+        <minor>4.1.1</minor>
+        <minor>4.1.2</minor>
+      </minors>
+      <status>minor available</status>
+    </dependency>
+    <dependency>
+      <groupId>io.mathan.test</groupId>
+      <artifactId>dependency-with-major</artifactId>
+      <scope>null</scope>
+      <classifier>null</classifier>
+      <type>pom</type>
+      <currentVersion>1.4.0</currentVersion>
+      <nextVersion>2.0.0</nextVersion>
+      <majors>
+        <major>2.0.0</major>
+        <major>2.1.0</major>
+      </majors>
+      <status>major available</status>
+    </dependency>
+    <dependency>
+      <groupId>io.mathan.test</groupId>
+      <artifactId>dependency-with-incremental</artifactId>
+      <scope>test</scope>
+      <classifier>null</classifier>
+      <type>pom</type>
+      <currentVersion>4.2.2</currentVersion>
+      <nextVersion>4.2.3</nextVersion>
+      <incrementals>
+        <incremental>4.2.3</incremental>
+      </incrementals>
+      <status>incremental available</status>
+    </dependency>
+    <dependency>
+      <groupId>io.mathan.test</groupId>
+      <artifactId>dependency-with-none</artifactId>
+      <scope>null</scope>
+      <classifier>any</classifier>
+      <type>pom</type>
+      <currentVersion>3.0.9</currentVersion>
+      <status>no new available</status>
+    </dependency>
+  </dependencies>
+</DependencyUpdatesReport>

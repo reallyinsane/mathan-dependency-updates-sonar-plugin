@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.sonarsource.parent</groupId>
+        <artifactId>parent</artifactId>
+        <version>40</version>
+    </parent>
+    <groupId>io.mathan.sonar</groupId>
+    <artifactId>mathan-dependency-updates-sonar-plugin-reactor</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>mathan-dependency-updates-sonar-plugin</name>
+    <properties>
+        <license.name>AL2</license.name>
+        <license.owner>Matthias Hanisch</license.owner>
+        <license.mailto>matthias@mathan.io</license.mailto>
+        <license.years>2019</license.years>
+    </properties>
+
+    <licenses>
+        <license>
+            <name>AL2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Matthias Hanisch</name>
+            <email>matthias@mathan.io</email>
+            <url>https://github.com/reallyinsane</url>
+        </developer>
+    </developers>
+
+    <scm>
+      <connection>scm:git:https://github.com/reallyinsane/mathan-dependency-updates-sonar-plugin.git</connection>
+      <developerConnection>scm:git:https://github.com/reallyinsane/mathan-dependency-updates-sonar-plugin.git</developerConnection>
+      <url>https://github.com/reallyinsane/mathan-dependency-updates-sonar-plugin/tree/master</url>
+    </scm>
+
+    <issueManagement>
+      <system>GitHub</system>
+      <url>https://github.com/reallyinsane/mathan-dependency-updates-sonar-plugin/issues</url>
+    </issueManagement>
+
+    <ciManagement>
+      <system>Travis CI</system>
+      <url>https://travis-ci.org/reallyinsane/mathan-dependency-updates-sonar-plugin</url>
+    </ciManagement>
+
+    <modules>
+        <module>mathan-dependency-updates-sonar-plugin</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.1</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>${version.release.plugin}</version>
+                <configuration>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>de.jutzig</groupId>
+                <artifactId>github-release-plugin</artifactId>
+                <version>1.2.0</version>
+                <configuration>
+                    <releaseName>mathan-dependency-updates-sonar-plugin-${project.version}</releaseName>
+                    <tag>${project.version}</tag>
+                    <fileSets>
+                        <fileSet>
+                            <directory>mathan-dependency-updates-sonar-plugin/target</directory>
+                            <includes>
+                                <include>mathan-dependency-updates-sonar-plugin-${project.version}.jar</include>
+                            </includes>
+                        </fileSet>
+                    </fileSets>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>
