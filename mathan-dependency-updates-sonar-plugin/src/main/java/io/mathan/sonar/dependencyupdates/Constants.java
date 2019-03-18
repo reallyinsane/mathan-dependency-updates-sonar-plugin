@@ -21,18 +21,15 @@ import org.sonar.api.rule.Severity;
 
 public final class Constants {
 
-  public static final String REPORT_PATH_PROPERTY = "sonar.dependencyUpdates.reportPath";
+  public static final String CONFIG_REPORT_PATH_PROPERTY = "sonar.dependencyUpdates.reportPath";
+  public static final String CONFIG_REPORT_PATH_DEFAULT = "target/dependency-updates-report.xml";
 
-  static final String UPDATE_INCREMENTAL = "sonar.dependencyUpdates.updateIncremental";
-  static final String UPDATE_MINOR = "sonar.dependencyUpdates.updateMinor";
-  static final String UPDATE_MAJOR = "sonar.dependencyUpdates.updateMajor";
-
-  static final String UPDATE_INCREMENTAL_DEFAULT = Severity.MINOR;
-  static final String UPDATE_MINOR_DEFAULT = Severity.MAJOR;
-  static final String UPDATE_MAJOR_DEFAULT = Severity.CRITICAL;
-
-
-  public static final String REPORT_PATH_DEFAULT = "target/dependency-updates-report.xml";
+  static final String CONFIG_UPDATE_INCREMENTAL = "sonar.dependencyUpdates.updateIncremental";
+  static final String CONFIG_UPDATE_INCREMENTAL_DEFAULT = Severity.MINOR;
+  static final String CONFIG_UPDATE_MINOR = "sonar.dependencyUpdates.updateMinor";
+  static final String CONFIG_UPDATE_MINOR_DEFAULT = Severity.MAJOR;
+  static final String CONFIG_UPDATE_MAJOR = "sonar.dependencyUpdates.updateMajor";
+  static final String CONFIG_UPDATE_MAJOR_DEFAULT = Severity.CRITICAL;
 
   public static final String REPOSITORY_KEY = "DependencyUpdates";
   public static final String LANGUAGE_KEY = "mathan";

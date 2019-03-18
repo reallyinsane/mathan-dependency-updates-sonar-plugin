@@ -86,9 +86,9 @@ public class Sensor implements org.sonar.api.batch.sensor.Sensor {
 
   private void addIssues(SensorContext context, Analysis analysis) {
 
-    Severity severityIncremental = Severity.valueOf(context.config().get(Constants.UPDATE_INCREMENTAL).orElse(Constants.UPDATE_INCREMENTAL_DEFAULT));
-    Severity severityMinor = Severity.valueOf(context.config().get(Constants.UPDATE_MINOR).orElse(Constants.UPDATE_MINOR_DEFAULT));
-    Severity severityMajor = Severity.valueOf(context.config().get(Constants.UPDATE_MAJOR).orElse(Constants.UPDATE_MAJOR_DEFAULT));
+    Severity severityIncremental = Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_INCREMENTAL).orElse(Constants.CONFIG_UPDATE_INCREMENTAL_DEFAULT));
+    Severity severityMinor = Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_MINOR).orElse(Constants.CONFIG_UPDATE_MINOR_DEFAULT));
+    Severity severityMajor = Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_MAJOR).orElse(Constants.CONFIG_UPDATE_MAJOR_DEFAULT));
     Map<Availablility, Severity> map = new HashMap<>();
     map.put(Availablility.Incremental, severityIncremental);
     map.put(Availablility.Minor, severityMinor);

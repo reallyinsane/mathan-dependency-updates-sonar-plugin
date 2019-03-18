@@ -49,7 +49,7 @@ public class XmlReportFile {
   private static File checkReport(@Nullable File report) {
     if (report != null) {
       if (!report.exists()) {
-        LOGGER.info("Dependency-Updates {} report does not exists. Please check property {}:{}", "XML", Constants.REPORT_PATH_PROPERTY, report.getAbsolutePath());
+        LOGGER.info("Dependency-Updates {} report does not exists. Please check property {}:{}", "XML", Constants.CONFIG_REPORT_PATH_PROPERTY, report.getAbsolutePath());
         return null;
       }
       if (!report.isFile()) {
@@ -64,7 +64,7 @@ public class XmlReportFile {
     return report;
   }
   public static XmlReportFile getXmlReport(Configuration config, FileSystem fileSystem, PathResolver pathResolver) throws FileNotFoundException {
-    String path = config.get(Constants.REPORT_PATH_PROPERTY).orElse(Constants.REPORT_PATH_DEFAULT);
+    String path = config.get(Constants.CONFIG_REPORT_PATH_PROPERTY).orElse(Constants.CONFIG_REPORT_PATH_DEFAULT);
     File report = pathResolver.relativeFile(fileSystem.baseDir(), path);
     report = checkReport(report);
     if (report == null) {
