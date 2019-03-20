@@ -17,7 +17,6 @@
  */
 package io.mathan.sonar.dependencyupdates.parser;
 
-import io.mathan.sonar.dependencyupdates.Constants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,36 +31,36 @@ public class Dependency {
   private String classifier;
   private String type;
   private String next;
-  private Availablility availablility;
+  private Availability availability;
 
   private List<String> incrementals = new ArrayList<>();
   private List<String> minors = new ArrayList<>();
   private List<String> majors = new ArrayList<>();
 
-  public enum Availablility {
+  public enum Availability {
     Incremental("incremental available"),
     Minor("minor available"),
     Major("major available"),
     None("no new available");
     private final String name;
 
-    Availablility(String name) {
+    Availability(String name) {
       this.name = name;
     }
 
-    public static Availablility fromString(String name) {
-      Availablility[] availablilities = Availablility.values();
-      for (Availablility availablility : availablilities) {
-        if (name.equals(availablility.name)) {
-          return availablility;
+    public static Availability fromString(String name) {
+      Availability[] availabilities = Availability.values();
+      for (Availability availability : availabilities) {
+        if (name.equals(availability.name)) {
+          return availability;
         }
       }
       return null;
     }
   }
 
-  public Availablility getAvailablility() {
-    return availablility;
+  public Availability getAvailability() {
+    return availability;
   }
 
   public List<String> getIncrementals() {
@@ -108,8 +107,8 @@ public class Dependency {
     this.artifactId = artifactId;
   }
 
-  public void setAvailablility(Availablility availablility) {
-    this.availablility = availablility;
+  public void setAvailability(Availability availability) {
+    this.availability = availability;
   }
 
   public void setClassifier(@Nullable String classifier) {
@@ -152,7 +151,7 @@ public class Dependency {
         Objects.equals(classifier, that.classifier) &&
         Objects.equals(type, that.type) &&
         Objects.equals(next, that.next) &&
-        availablility == that.availablility &&
+        availability == that.availability &&
         Objects.equals(incrementals, that.incrementals) &&
         Objects.equals(minors, that.minors) &&
         Objects.equals(majors, that.majors);
@@ -160,6 +159,6 @@ public class Dependency {
 
   @Override
   public int hashCode() {
-    return Objects.hash(groupId, artifactId, version, scope, classifier, type, next, availablility, incrementals, minors, majors);
+    return Objects.hash(groupId, artifactId, version, scope, classifier, type, next, availability, incrementals, minors, majors);
   }
 }

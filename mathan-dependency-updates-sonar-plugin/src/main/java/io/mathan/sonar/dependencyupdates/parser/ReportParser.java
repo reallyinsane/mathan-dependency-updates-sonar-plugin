@@ -18,7 +18,7 @@
 package io.mathan.sonar.dependencyupdates.parser;
 
 import io.mathan.sonar.dependencyupdates.Utils;
-import io.mathan.sonar.dependencyupdates.parser.Dependency.Availablility;
+import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
 import java.io.InputStream;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -112,7 +112,7 @@ public class ReportParser {
       } else if ("majors".equals(nodeName)) {
         processVersions(dependency.getMajors(), childCursor, "major");
       } else if ("status".equals(nodeName)) {
-        dependency.setAvailablility(Availablility.fromString(StringUtils.trim(childCursor.collectDescendantText(true))));
+        dependency.setAvailability(Availability.fromString(StringUtils.trim(childCursor.collectDescendantText(true))));
       }
 
     }

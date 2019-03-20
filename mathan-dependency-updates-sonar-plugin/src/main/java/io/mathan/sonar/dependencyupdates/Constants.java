@@ -31,10 +31,21 @@ public final class Constants {
   static final String CONFIG_UPDATE_MAJOR = "sonar.dependencyUpdates.updateMajor";
   static final String CONFIG_UPDATE_MAJOR_DEFAULT = Severity.CRITICAL;
 
+  static final String CONFIG_INCLUSIONS = "sonar.dependencyUpdates.inclusions";
+  static final String CONFIG_EXCLUSIONS = "sonar.dependencyUpdates.exclusions";
+
+  static final String CONFIG_OVERRIDE_INFO = "sonar.dependencyUpdates.override.info";
+  static final String CONFIG_OVERRIDE_MINOR = "sonar.dependencyUpdates.override.minor";
+  static final String CONFIG_OVERRIDE_MAJOR = "sonar.dependencyUpdates.override.major";
+  static final String CONFIG_OVERRIDE_CRITICAL = "sonar.dependencyUpdates.override.critical";
+  static final String CONFIG_OVERRIDE_BLOCKER = "sonar.dependencyUpdates.override.blocker";
+
   public static final String REPOSITORY_KEY = "DependencyUpdates";
   public static final String LANGUAGE_KEY = "mathan";
   public static final String RULE_KEY = "UsingDependencyWithAvailableUpdates";
   static final String SUB_CATEGORY_UPDATES = "Updates";
+  static final String SUB_CATEGORY_INCLUSIONS_EXCLUSIONS = "Inclusions/Exclusions";
+  static final String SUB_CATEGORY_OVERRIDES = "Overrides";
 
   private Constants() {
   }

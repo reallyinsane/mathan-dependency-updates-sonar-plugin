@@ -62,6 +62,59 @@ public class Configuration {
             .options(Severity.ALL)
             .defaultValue(Constants.CONFIG_UPDATE_MAJOR_DEFAULT)
             .type(PropertyType.SINGLE_SELECT_LIST)
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_INCLUSIONS)
+            .subCategory(Constants.SUB_CATEGORY_INCLUSIONS_EXCLUSIONS)
+            .name("Inclusions")
+            .description("Whitelist of dependencies to include in the analysis separated by comma. The filter syntax is"
+                + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
+                + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .defaultValue("")
+            .type(PropertyType.STRING)
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_EXCLUSIONS)
+            .subCategory(Constants.SUB_CATEGORY_INCLUSIONS_EXCLUSIONS)
+            .name("Inclusions")
+            .description("Blacklist of dependencies to exclude in the analysis separated by comma. The filter syntax is"
+                + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
+                + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .defaultValue("")
+            .type(PropertyType.STRING)
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_INFO)
+            .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
+            .name("Override severity with INFO")
+            .description("Whitelist of dependencies whose issue severity will be overridden with INFO. The filter syntax is"
+                + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
+                + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_MINOR)
+            .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
+            .name("Override severity with MINOR")
+            .description("Whitelist of dependencies whose issue severity will be overridden with MINOR. The filter syntax is"
+                + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
+                + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_MAJOR)
+            .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
+            .name("Override severity with MAJOR")
+            .description("Whitelist of dependencies whose issue severity will be overridden with MAJOR. The filter syntax is"
+                + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
+                + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_CRITICAL)
+            .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
+            .name("Override severity with CRITICAL")
+            .description("Whitelist of dependencies whose issue severity will be overridden with CRITICAL. The filter syntax is"
+                + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
+                + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_BLOCKER)
+            .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
+            .name("Override severity with BLOCKER")
+            .description("Whitelist of dependencies whose issue severity will be overridden with BLOCKER. The filter syntax is"
+                + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
+                + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
             .build()
     );
   }

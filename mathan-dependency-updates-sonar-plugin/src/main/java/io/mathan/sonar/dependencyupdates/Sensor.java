@@ -20,13 +20,10 @@ package io.mathan.sonar.dependencyupdates;
 import io.mathan.sonar.dependencyupdates.parser.ReportParser;
 import io.mathan.sonar.dependencyupdates.parser.Analysis;
 import io.mathan.sonar.dependencyupdates.parser.Dependency;
-import io.mathan.sonar.dependencyupdates.parser.Dependency.Availablility;
 import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.xml.stream.XMLStreamException;
 import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.batch.rule.Severity;
@@ -54,7 +51,7 @@ public class Sensor implements org.sonar.api.batch.sensor.Sensor {
 
   private String formatDescription(Dependency dependency, boolean dependencyManagement) {
     StringBuilder sb = new StringBuilder();
-    switch (dependency.getAvailablility()) {
+    switch (dependency.getAvailability()) {
       case Incremental:
         sb.append("Incremental ");
         break;
@@ -70,36 +67,29 @@ public class Sensor implements org.sonar.api.batch.sensor.Sensor {
     return sb.toString().trim();
   }
 
-  private void addIssues(SensorContext context, Map<Availablility, Severity> map, List<Dependency> dependencies, boolean dependencyManagement) {
+  private void addIssues(SensorContext context, DependencyFilter filter, List<Dependency> dependencies, boolean dependencyManagement) {
     for (Dependency dependency : dependencies) {
-      if (dependency.getAvailablility() != Availablility.None) {
+      Severity severity = filter.severity(dependency);
+      if (severity != null) {
         context.newIssue()
             .forRule(RuleKey.of(Constants.REPOSITORY_KEY, Constants.RULE_KEY))
             .at(new DefaultIssueLocation()
                 .on(context.module())
                 .message(formatDescription(dependency, dependencyManagement)))
-            .overrideSeverity(map.get(dependency.getAvailablility()))
+            .overrideSeverity(severity)
             .save();
       }
     }
   }
 
-  private void addIssues(SensorContext context, Analysis analysis) {
-
-    Severity severityIncremental = Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_INCREMENTAL).orElse(Constants.CONFIG_UPDATE_INCREMENTAL_DEFAULT));
-    Severity severityMinor = Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_MINOR).orElse(Constants.CONFIG_UPDATE_MINOR_DEFAULT));
-    Severity severityMajor = Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_MAJOR).orElse(Constants.CONFIG_UPDATE_MAJOR_DEFAULT));
-    Map<Availablility, Severity> map = new HashMap<>();
-    map.put(Availablility.Incremental, severityIncremental);
-    map.put(Availablility.Minor, severityMinor);
-    map.put(Availablility.Major, severityMajor);
+  private void addIssues(SensorContext context, Analysis analysis, DependencyFilter filter) {
 
     context.<Integer>newMeasure().forMetric(Metrics.INCREMENTAL_UPDATES).on(context.module()).withValue(analysis.getNextIncrementalAvailable()).save();
     context.<Integer>newMeasure().forMetric(Metrics.MINOR_UPDATES).on(context.module()).withValue(analysis.getNextMinorAvailable()).save();
     context.<Integer>newMeasure().forMetric(Metrics.MAJOR_UPDATES).on(context.module()).withValue(analysis.getNextMajorAvailable()).save();
 
-    addIssues(context, map, analysis.getDependencyManagements(), true);
-    addIssues(context, map, analysis.getDependencies(), false);
+    addIssues(context, filter, analysis.getDependencyManagements(), true);
+    addIssues(context, filter, analysis.getDependencies(), false);
 
 
   }
@@ -121,11 +111,12 @@ public class Sensor implements org.sonar.api.batch.sensor.Sensor {
 
   @Override
   public void execute(SensorContext sensorContext) {
+    DependencyFilter filter = DependencyFilter.create(sensorContext);
     Profiler profiler = Profiler.create(LOGGER);
     profiler.startInfo("Process Dependency-Updates report");
     try {
       Analysis analysis = parseAnalysis(sensorContext);
-      addIssues(sensorContext, analysis);
+      addIssues(sensorContext, analysis, filter);
     } catch (FileNotFoundException e) {
       LOGGER.info("Analysis skipped/aborted due to missing report file");
       LOGGER.debug(e.getMessage(), e);
