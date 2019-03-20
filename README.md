@@ -54,12 +54,12 @@ sonar.dependencyUpdates.updateIncremental | Overrides the severity used for depe
 sonar.dependencyUpdates.updateMinor | Overrides the severity used for dependencies with minor updates available. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER) | Severity.MAJOR
 sonar.dependencyUpdates.updateMajor | Overrides the severity used for dependencies with major updates available. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER) | Severity.CRITICAL
 sonar.dependencyUpdates.inclusions | Filter (see Artifact pattern syntax) to include certain dependencies only. | `:::` (include all)
-sonar.dependencyUpdates.exclusions | Filter (see Artifact pattern syntax) to exclude certain dependencies. | `` (exclude none)
-sonar.dependencyUpdates.override.info | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to INFO | `` (no override)
-sonar.dependencyUpdates.override.minor | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to MINOR | `` (no override)
-sonar.dependencyUpdates.override.major | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to MAJOR | `` (no override)
-sonar.dependencyUpdates.override.critical | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to CRITICAL | `` (no override)
-sonar.dependencyUpdates.override.blocker | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to BLOCKER | `` (no override)
+sonar.dependencyUpdates.exclusions | Filter (see Artifact pattern syntax) to exclude certain dependencies. | (none)
+sonar.dependencyUpdates.override.info | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to INFO | (none)
+sonar.dependencyUpdates.override.minor | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to MINOR | (none)
+sonar.dependencyUpdates.override.major | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to MAJOR | (none)
+sonar.dependencyUpdates.override.critical | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to CRITICAL | (none)
+sonar.dependencyUpdates.override.blocker | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to BLOCKER | (none)
 
 [dependency updates report]: https://www.mojohaus.org/versions-maven-plugin/dependency-updates-report-mojo.html
 [versions-maven-plugin]: https://github.com/mojohaus/versions-maven-plugin
