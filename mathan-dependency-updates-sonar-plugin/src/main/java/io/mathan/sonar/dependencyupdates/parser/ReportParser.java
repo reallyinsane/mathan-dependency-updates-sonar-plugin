@@ -49,31 +49,14 @@ public class ReportParser {
 
     while (childCursor.getNext() != null) {
       String nodeName = childCursor.getLocalName();
-      if ("summary".equals(nodeName)) {
-        processSummary(analysis, childCursor);
-      } else if ("dependencyManagements".equals(nodeName)) {
+      if ("dependencyManagements".equals(nodeName)) {
         processDependencies(analysis.getDependencyManagements(), childCursor, "dependencyManagement");
       } else if ("dependencies".equals(nodeName)) {
         processDependencies(analysis.getDependencies(), childCursor, "dependency");
       }
     }
+    analysis.finish();
     return analysis;
-  }
-
-  private static void processSummary(Analysis analysis, SMInputCursor summary) throws XMLStreamException {
-    SMInputCursor childCursor = summary.childCursor();
-    while (childCursor.getNext() != null) {
-      String nodeName = childCursor.getLocalName();
-      if ("usingLastVersion".equals(nodeName)) {
-        analysis.setUsingLastVersion(Integer.valueOf(childCursor.collectDescendantText(true).trim()));
-      } else if ("nextIncremetalAvailable".equals(nodeName)) {
-        analysis.setNextIncrementalAvailable(Integer.valueOf(childCursor.collectDescendantText(true).trim()));
-      } else if ("nextMinorAvailable".equals(nodeName)) {
-        analysis.setNextMinorAvailable(Integer.valueOf(childCursor.collectDescendantText(true).trim()));
-      } else if ("nextMajorAvailable".equals(nodeName)) {
-        analysis.setNextMajorAvailable(Integer.valueOf(childCursor.collectDescendantText(true).trim()));
-      }
-    }
   }
 
   private static void processDependencies(List<Dependency> list, SMInputCursor parent, String childName) throws XMLStreamException {

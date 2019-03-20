@@ -22,7 +22,6 @@ import java.util.List;
 
 public class Analysis {
 
-  private int usingLastVersion = 0;
   private int nextIncrementalAvailable = 0;
   private int nextMinorAvailable = 0;
   private int nextMajorAvailable = 0;
@@ -50,24 +49,12 @@ public class Analysis {
     return nextMinorAvailable;
   }
 
-  public int getUsingLastVersion() {
-    return usingLastVersion;
+  void finish() {
+    this.nextIncrementalAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getIncrementals().size()>0).count()
+        +dependencies.stream().filter(dependency -> dependency.getIncrementals().size()>0).count()));
+    this.nextMinorAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getMinors().size()>0).count()
+        +dependencies.stream().filter(dependency -> dependency.getMinors().size()>0).count()));
+    this.nextMajorAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getMajors().size()>0).count()
+        +dependencies.stream().filter(dependency -> dependency.getMajors().size()>0).count()));
   }
-
-  public void setNextIncrementalAvailable(int nextIncrementalAvailable) {
-    this.nextIncrementalAvailable = nextIncrementalAvailable;
-  }
-
-  public void setNextMajorAvailable(int nextMajorAvailable) {
-    this.nextMajorAvailable = nextMajorAvailable;
-  }
-
-  public void setNextMinorAvailable(int nextMinorAvailable) {
-    this.nextMinorAvailable = nextMinorAvailable;
-  }
-
-  public void setUsingLastVersion(int usingLastVersion) {
-    this.usingLastVersion = usingLastVersion;
-  }
-
 }

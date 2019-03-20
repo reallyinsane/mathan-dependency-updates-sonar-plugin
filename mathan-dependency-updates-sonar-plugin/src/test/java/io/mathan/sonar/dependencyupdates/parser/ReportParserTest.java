@@ -33,10 +33,9 @@ public class ReportParserTest {
   public void parseReport() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("report/dependency-updates-report.xml");
     Analysis analysis = ReportParser.parse(inputStream);
-    Assert.assertEquals(1, analysis.getUsingLastVersion());
     Assert.assertEquals(2, analysis.getNextIncrementalAvailable());
-    Assert.assertEquals(3, analysis.getNextMinorAvailable());
-    Assert.assertEquals(4, analysis.getNextMajorAvailable());
+    Assert.assertEquals(2, analysis.getNextMinorAvailable());
+    Assert.assertEquals(2, analysis.getNextMajorAvailable());
 
     List<Dependency> dependencyManagements = analysis.getDependencyManagements();
     Assert.assertEquals(4, dependencyManagements.size());
