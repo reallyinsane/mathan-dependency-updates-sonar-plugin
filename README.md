@@ -15,7 +15,7 @@ The [versions-maven-plugin] has the goal *dependency-updates-report* which creat
 
 **This SonarQube plugin does not perform analysis**, rather, it reads existing dependency-updates-reports. Please refer to [versions-maven-plugin] for relevant documentation how to generate the reports.
 
-##Metrics
+## Metrics
 
 The plugin keeps track of the following statistics:
 
