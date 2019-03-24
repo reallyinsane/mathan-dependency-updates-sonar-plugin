@@ -24,7 +24,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-import org.apache.maven.shared.artifact.filter.StrictPatternExcludesArtifactFilter;
 import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
 import org.sonar.api.batch.rule.Severity;
 import org.sonar.api.batch.sensor.SensorContext;
@@ -64,14 +63,6 @@ public class DependencyFilter {
       return new ExcludeArtifactFilter();
     } else {
       return new StrictPatternIncludesArtifactFilter(Arrays.asList(pattern.split(",")));
-    }
-  }
-
-  static ArtifactFilter getExcludeFilter(String pattern) {
-    if(pattern.trim().isEmpty()) {
-      return new ExcludeArtifactFilter();
-    } else {
-      return new StrictPatternExcludesArtifactFilter(Arrays.asList(pattern.split(",")));
     }
   }
 
@@ -163,7 +154,7 @@ public class DependencyFilter {
   }
 
   private static Artifact asArtifact(Dependency dependency) {
-    Artifact artifact = new DefaultArtifact(
+    return new DefaultArtifact(
         dependency.getGroupId(),
         dependency.getArtifactId(),
         dependency.getVersion(),
@@ -171,7 +162,6 @@ public class DependencyFilter {
         dependency.getType(),
         dependency.getClassifier(),
         new DefaultArtifactHandler());
-    return artifact;
   }
 
   static class ExcludeArtifactFilter implements ArtifactFilter {
