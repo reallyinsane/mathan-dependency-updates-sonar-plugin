@@ -27,7 +27,8 @@ public final class Plugin implements org.sonar.api.Plugin {
   @Override
   public void define(Context context) {
     context.addExtensions(Arrays.asList(
-        Sensor.class,
+        IssueSensor.class,
+        MetricSensor.class,
         Metrics.class,
         MathanProfile.class,
         MathanLanguage.class,

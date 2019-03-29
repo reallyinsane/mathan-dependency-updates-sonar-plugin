@@ -19,8 +19,11 @@ package io.mathan.sonar.dependencyupdates.parser;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.sonar.api.utils.log.Logger;
+import org.sonar.api.utils.log.Loggers;
 
 public class Analysis {
+  private static final Logger LOGGER = Loggers.get(Analysis.class);
 
   private int nextIncrementalAvailable = 0;
   private int nextMinorAvailable = 0;
@@ -37,16 +40,22 @@ public class Analysis {
     return dependencyManagements;
   }
 
-  public int getNextIncrementalAvailable() {
+  int getNextIncrementalAvailable() {
     return nextIncrementalAvailable;
   }
 
-  public int getNextMajorAvailable() {
+  int getNextMajorAvailable() {
     return nextMajorAvailable;
   }
 
-  public int getNextMinorAvailable() {
+  int getNextMinorAvailable() {
     return nextMinorAvailable;
+  }
+
+  public List<Dependency> all() {
+    List<Dependency> all = new ArrayList<>(dependencies);
+    all.addAll(dependencyManagements);
+    return all;
   }
 
   void finish() {
@@ -57,4 +66,5 @@ public class Analysis {
     this.nextMajorAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getMajors().size()>0).count()
         +dependencies.stream().filter(dependency -> dependency.getMajors().size()>0).count()));
   }
+
 }

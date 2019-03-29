@@ -19,7 +19,9 @@ package io.mathan.sonar.dependencyupdates.parser;
 
 import io.mathan.sonar.dependencyupdates.Utils;
 import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
-import java.io.InputStream;
+import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
+import io.mathan.sonar.dependencyupdates.report.XmlReportFileImpl;
+import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.xml.stream.XMLStreamException;
@@ -37,16 +39,21 @@ public class ReportParser {
   private ReportParser() {
   }
 
-  public static Analysis parse(InputStream inputStream) throws XMLStreamException {
+  public static Analysis parse(List<XmlReportFile> files) throws IOException, XMLStreamException {
+    Analysis analysis = new Analysis();
+    for(XmlReportFile file:files) {
+      parse(analysis, file);
+    }
+    analysis.finish();
+    return analysis;
+  }
 
+  private static void parse(Analysis analysis, XmlReportFile file) throws IOException, XMLStreamException {
     SMInputFactory inputFactory = Utils.newStaxParser();
-    SMHierarchicCursor rootC = inputFactory.rootElementCursor(inputStream);
+    SMHierarchicCursor rootC = inputFactory.rootElementCursor(file.getInputStream());
     rootC.advance(); // <DependencyUpdatesReport>
 
     SMInputCursor childCursor = rootC.childCursor();
-
-    Analysis analysis = new Analysis();
-
     while (childCursor.getNext() != null) {
       String nodeName = childCursor.getLocalName();
       if ("dependencyManagements".equals(nodeName)) {
@@ -55,9 +62,8 @@ public class ReportParser {
         processDependencies(analysis.getDependencies(), childCursor, "dependency");
       }
     }
-    analysis.finish();
-    return analysis;
   }
+
 
   private static void processDependencies(List<Dependency> list, SMInputCursor parent, String childName) throws XMLStreamException {
     SMInputCursor childCursor = parent.childCursor();

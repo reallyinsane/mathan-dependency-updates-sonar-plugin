@@ -19,11 +19,11 @@ The [versions-maven-plugin] has the goal *dependency-updates-report* which creat
 
 The plugin keeps track of the following statistics:
 
-* Total number of dependencies with incremental updates available
-* Total number of dependencies with minor updates available
-* Total number of dependencies with major updates available
+* Total number of dependencies with patches available (incremental updates)
+* Total number of dependencies with upgrades available (minor and major updates)
+* Total number of patches missed
+* Total number of upgrades missed
 
-As there can be incremental, minor and major updates available for a dependency at the same time, a single dependency can be included in none, one or multiple of the metrics.
 
 ## Installation
 

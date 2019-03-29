@@ -20,9 +20,10 @@ package io.mathan.sonar.dependencyupdates;
 import io.mathan.sonar.dependencyupdates.parser.ReportParser;
 import io.mathan.sonar.dependencyupdates.parser.Analysis;
 import io.mathan.sonar.dependencyupdates.parser.Dependency;
-import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
+import io.mathan.sonar.dependencyupdates.report.XmlReportFileImpl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.sonar.api.batch.fs.FileSystem;
@@ -36,15 +37,15 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 import org.sonar.api.utils.log.Profiler;
 
-public class Sensor implements org.sonar.api.batch.sensor.Sensor {
+public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
 
-  private static final Logger LOGGER = Loggers.get(Sensor.class);
+  private static final Logger LOGGER = Loggers.get(IssueSensor.class);
   private static final String SENSOR_NAME = "Dependency-Updates";
 
   private final FileSystem fileSystem;
   private final PathResolver pathResolver;
 
-  public Sensor(FileSystem fileSystem, PathResolver pathResolver) {
+  public IssueSensor(FileSystem fileSystem, PathResolver pathResolver) {
     this.fileSystem = fileSystem;
     this.pathResolver = pathResolver;
   }
@@ -53,16 +54,16 @@ public class Sensor implements org.sonar.api.batch.sensor.Sensor {
     StringBuilder sb = new StringBuilder();
     switch (dependency.getAvailability()) {
       case Incremental:
-        sb.append("Incremental ");
+        sb.append("Patch ");
         break;
       case Minor:
-        sb.append("Minor ");
+        sb.append("Minor update ");
         break;
       case Major:
-        sb.append("Major ");
+        sb.append("Major update ");
         break;
     }
-    sb.append(String.format("update for dependency %s:%s:%s%s available. Next version is %s.", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(),
+    sb.append(String.format("available for dependency %s:%s:%s%s. Next version is %s.", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(),
         dependencyManagement ? " (see dependency management)" : "", dependency.getNext()));
     return sb.toString().trim();
   }
@@ -74,7 +75,8 @@ public class Sensor implements org.sonar.api.batch.sensor.Sensor {
         context.newIssue()
             .forRule(RuleKey.of(Constants.REPOSITORY_KEY, Constants.RULE_KEY))
             .at(new DefaultIssueLocation()
-                .on(context.module())
+                //.on(context.module())
+                .on(context.fileSystem().inputFile(context.fileSystem().predicates().hasRelativePath("pom.xml")))
                 .message(formatDescription(dependency, dependencyManagement)))
             .overrideSeverity(severity)
             .save();
@@ -84,19 +86,13 @@ public class Sensor implements org.sonar.api.batch.sensor.Sensor {
 
   private void addIssues(SensorContext context, Analysis analysis, DependencyFilter filter) {
 
-    context.<Integer>newMeasure().forMetric(Metrics.INCREMENTAL_UPDATES).on(context.module()).withValue(analysis.getNextIncrementalAvailable()).save();
-    context.<Integer>newMeasure().forMetric(Metrics.MINOR_UPDATES).on(context.module()).withValue(analysis.getNextMinorAvailable()).save();
-    context.<Integer>newMeasure().forMetric(Metrics.MAJOR_UPDATES).on(context.module()).withValue(analysis.getNextMajorAvailable()).save();
-
     addIssues(context, filter, analysis.getDependencyManagements(), true);
     addIssues(context, filter, analysis.getDependencies(), false);
-
-
   }
 
   private Analysis parseAnalysis(SensorContext context) throws IOException, XMLStreamException {
-    XmlReportFile report = XmlReportFile.getXmlReport(context.config(), fileSystem, this.pathResolver);
-    return ReportParser.parse(report.getInputStream());
+    XmlReportFileImpl report = XmlReportFileImpl.getXmlReport(context.config(), fileSystem, this.pathResolver);
+    return ReportParser.parse(Arrays.asList(report));
   }
 
   @Override

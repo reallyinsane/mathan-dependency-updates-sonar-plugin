@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 
 public class Dependency {
 
+
   private String groupId;
   private String artifactId;
   private String version;
@@ -36,6 +37,7 @@ public class Dependency {
   private List<String> incrementals = new ArrayList<>();
   private List<String> minors = new ArrayList<>();
   private List<String> majors = new ArrayList<>();
+
 
   public enum Availability {
     Incremental("incremental available"),
@@ -67,12 +69,20 @@ public class Dependency {
     return incrementals;
   }
 
-  public List<String> getMajors() {
+  List<String> getMajors() {
     return majors;
   }
 
-  public List<String> getMinors() {
+  List<String> getMinors() {
     return minors;
+  }
+
+  public int getUpdates() {
+    return incrementals.size();
+  }
+
+  public int getUpgrades() {
+    return minors.size()+majors.size();
   }
 
   public String getArtifactId() {

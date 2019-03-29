@@ -18,6 +18,9 @@
 package io.mathan.sonar.dependencyupdates.parser;
 
 import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
+import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
+import io.mathan.sonar.dependencyupdates.report.XmlReportFileImpl;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -32,7 +35,8 @@ public class ReportParserTest {
   @Test
   public void parseReport() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("report/dependency-updates-report.xml");
-    Analysis analysis = ReportParser.parse(inputStream);
+
+    Analysis analysis = ReportParser.parse(Arrays.asList((XmlReportFile) () -> inputStream));
     Assert.assertEquals(2, analysis.getNextIncrementalAvailable());
     Assert.assertEquals(2, analysis.getNextMinorAvailable());
     Assert.assertEquals(2, analysis.getNextMajorAvailable());
