@@ -41,7 +41,7 @@ dependencies for the check. Reducing or raising the severity for dependencies ca
  
 The filters defined are using a special artifact pattern syntax already known from Maven extended to allow a comma separated list of such patterns.
  
-The pattern is defined like this: `[groupId]:[artifactId]:[type]:[version]`. 
+The pattern is defined like this: `[groupId]:[artifactId]:[type]:[version]:[scope]:[classifier]`. 
 
 Each pattern segment is optional and supports full and partial * wildcards. An empty pattern segment is treated as an implicit wildcard. For example, `org.apache.*` would match all artifacts
 whose group id started with `org.apache.`, and `:::*-SNAPSHOT` would match all snapshot artifacts.
@@ -53,7 +53,7 @@ Property | Description | Default
 sonar.dependencyUpdates.updateIncremental | Overrides the severity used for dependencies with incremental updates available. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER) | Severity.MINOR
 sonar.dependencyUpdates.updateMinor | Overrides the severity used for dependencies with minor updates available. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER) | Severity.MAJOR
 sonar.dependencyUpdates.updateMajor | Overrides the severity used for dependencies with major updates available. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER) | Severity.CRITICAL
-sonar.dependencyUpdates.inclusions | Filter (see Artifact pattern syntax) to include certain dependencies only. | `:::` (include all)
+sonar.dependencyUpdates.inclusions | Filter (see Artifact pattern syntax) to include certain dependencies only. | `:::::` (include all)
 sonar.dependencyUpdates.exclusions | Filter (see Artifact pattern syntax) to exclude certain dependencies. | (none)
 sonar.dependencyUpdates.override.info | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to INFO | (none)
 sonar.dependencyUpdates.override.minor | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to MINOR | (none)

@@ -30,15 +30,15 @@ class DependencyFilterSpec extends Specification {
    */
   def configuration(Availability availability, Severity expected) {
     expect:
-      DependencyFilter filter = configuration()
-      Dependency dependency = dependency(availability)
-      filter.severity(dependency) == expected
+    DependencyFilter filter = configuration()
+    Dependency dependency = dependency(availability)
+    filter.severity(dependency) == expected
     where:
-      availability             | expected
-      Availability.Incremental | Severity.MINOR
-      Availability.Minor       | Severity.MAJOR
-      Availability.Major       | Severity.CRITICAL
-      Availability.None        | null
+    availability             | expected
+    Availability.Incremental | Severity.MINOR
+    Availability.Minor       | Severity.MAJOR
+    Availability.Major       | Severity.CRITICAL
+    Availability.None        | null
   }
 
   /**
@@ -48,19 +48,19 @@ class DependencyFilterSpec extends Specification {
    */
   def "defaultSeverityIncremental"(Severity severityIncremental, Availability availability, Severity expected) {
     expect:
-      DependencyFilter filter = configuration()
-      filter.setDefaultSeverityIncremental(severityIncremental)
-      Dependency dependency = dependency(availability)
-      filter.severity(dependency) == expected
+    DependencyFilter filter = configuration()
+    filter.setDefaultSeverityIncremental(severityIncremental)
+    Dependency dependency = dependency(availability)
+    filter.severity(dependency) == expected
     where:
-      severityIncremental | availability             | expected
-      Severity.INFO       | Availability.None        | null
-      Severity.INFO       | Availability.Incremental | Severity.INFO
-      Severity.INFO       | Availability.Minor       | Severity.MAJOR
-      Severity.INFO       | Availability.Major       | Severity.CRITICAL
-      Severity.MAJOR      | Availability.Incremental | Severity.MAJOR
-      Severity.CRITICAL   | Availability.Incremental | Severity.CRITICAL
-      Severity.BLOCKER    | Availability.Incremental | Severity.BLOCKER
+    severityIncremental | availability             | expected
+    Severity.INFO       | Availability.None        | null
+    Severity.INFO       | Availability.Incremental | Severity.INFO
+    Severity.INFO       | Availability.Minor       | Severity.MAJOR
+    Severity.INFO       | Availability.Major       | Severity.CRITICAL
+    Severity.MAJOR      | Availability.Incremental | Severity.MAJOR
+    Severity.CRITICAL   | Availability.Incremental | Severity.CRITICAL
+    Severity.BLOCKER    | Availability.Incremental | Severity.BLOCKER
   }
 
   /**
@@ -70,19 +70,19 @@ class DependencyFilterSpec extends Specification {
    */
   def "defaultSeverityMinor"(Severity severityMinor, Availability availability, Severity expected) {
     expect:
-      DependencyFilter filter = configuration()
-      filter.setDefaultSeverityMinor(severityMinor)
-      Dependency dependency = dependency(availability)
-      filter.severity(dependency) == expected
+    DependencyFilter filter = configuration()
+    filter.setDefaultSeverityMinor(severityMinor)
+    Dependency dependency = dependency(availability)
+    filter.severity(dependency) == expected
     where:
-      severityMinor       | availability             | expected
-      Severity.INFO       | Availability.None        | null
-      Severity.INFO       | Availability.Incremental | Severity.MINOR
-      Severity.INFO       | Availability.Minor       | Severity.INFO
-      Severity.INFO       | Availability.Major       | Severity.CRITICAL
-      Severity.MINOR      | Availability.Minor       | Severity.MINOR
-      Severity.CRITICAL   | Availability.Minor       | Severity.CRITICAL
-      Severity.BLOCKER    | Availability.Minor       | Severity.BLOCKER
+    severityMinor     | availability             | expected
+    Severity.INFO     | Availability.None        | null
+    Severity.INFO     | Availability.Incremental | Severity.MINOR
+    Severity.INFO     | Availability.Minor       | Severity.INFO
+    Severity.INFO     | Availability.Major       | Severity.CRITICAL
+    Severity.MINOR    | Availability.Minor       | Severity.MINOR
+    Severity.CRITICAL | Availability.Minor       | Severity.CRITICAL
+    Severity.BLOCKER  | Availability.Minor       | Severity.BLOCKER
   }
 
   /**
@@ -92,18 +92,18 @@ class DependencyFilterSpec extends Specification {
    */
   def "defaultSeverityMajor"(Severity severityMajor, Availability availability, Severity expected) {
     expect:
-      DependencyFilter filter = configuration()
-      filter.setDefaultSeverityMajor(severityMajor)
-      Dependency dependency = dependency(availability)
-      filter.severity(dependency) == expected
+    DependencyFilter filter = configuration()
+    filter.setDefaultSeverityMajor(severityMajor)
+    Dependency dependency = dependency(availability)
+    filter.severity(dependency) == expected
     where:
-      severityMajor       | availability             | expected
-      Severity.INFO       | Availability.None        | null
-      Severity.INFO       | Availability.Incremental | Severity.MINOR
-      Severity.INFO       | Availability.Minor       | Severity.MAJOR
-      Severity.INFO       | Availability.Major       | Severity.INFO
-      Severity.MINOR      | Availability.Major       | Severity.MINOR
-      Severity.BLOCKER    | Availability.Major       | Severity.BLOCKER
+    severityMajor    | availability             | expected
+    Severity.INFO    | Availability.None        | null
+    Severity.INFO    | Availability.Incremental | Severity.MINOR
+    Severity.INFO    | Availability.Minor       | Severity.MAJOR
+    Severity.INFO    | Availability.Major       | Severity.INFO
+    Severity.MINOR   | Availability.Major       | Severity.MINOR
+    Severity.BLOCKER | Availability.Major       | Severity.BLOCKER
   }
 
   /**
@@ -112,21 +112,25 @@ class DependencyFilterSpec extends Specification {
    */
   def "inclusion"(String inclusions, boolean included) {
     expect:
-      DependencyFilter filter = configuration()
-      filter.setInclusions(inclusions)
-      Dependency dependency = dependency()
-      Severity.MINOR.equals(filter.severity(dependency)) == included
+    DependencyFilter filter = configuration()
+    filter.setInclusions(inclusions)
+    Dependency dependency = dependency()
+    Severity.MINOR.equals(filter.severity(dependency)) == included
     where:
-      inclusions                                     | included
-      ""                                             | false
-      ":::"                                          | true
-      "io.mathan.sonar.test:::"                      | true
-      "io.mathan.sonar.test:test-artifact::"         | true
-      "io.mathan.sonar.test:test-artifact::1.0.1"    | true
-      "io.mathan.sonar.test:test-artifact:jar:1.0.1" | true
-      "io.mathan.sonar.test:test-artifact:jar:1.0.2" | false
-      "io.mathan.sonar.test:test-artifact:pom:1.0.1" | false
-      "::pom:,io.mathan.sonar.test:::"               | true
+    inclusions                                     | included
+    ""                                             | false
+    ":::"                                          | true
+    "io.mathan.sonar.test:::"                      | true
+    "io.mathan.sonar.test:test-artifact::"         | true
+    "io.mathan.sonar.test:test-artifact::1.0.1"    | true
+    "io.mathan.sonar.test:test-artifact:jar:1.0.1" | true
+    "io.mathan.sonar.test:test-artifact:jar:1.0.2" | false
+    "io.mathan.sonar.test:test-artifact:pom:1.0.1" | false
+    "::pom:,io.mathan.sonar.test:"                 | true
+    "::::compile:"                                 | false
+    "::::test:"                                    | true
+    ":::::javadoc"                                 | false
+    ":::::sources"                                 | true
   }
 
   /**
@@ -135,55 +139,55 @@ class DependencyFilterSpec extends Specification {
    */
   def "exclusions"(String exclusions, boolean included) {
     expect:
-      DependencyFilter filter = configuration()
-      filter.setExclusions(exclusions)
-      Dependency dependency = dependency()
-      Severity.MINOR.equals(filter.severity(dependency)) == included
+    DependencyFilter filter = configuration()
+    filter.setExclusions(exclusions)
+    Dependency dependency = dependency()
+    Severity.MINOR.equals(filter.severity(dependency)) == included
     where:
-      exclusions                                     | included
-      ""                                             | true
-      ":::"                                          | false
-      "io.mathan.sonar.test:::"                      | false
-      "io.mathan.sonar.test:test-artifact::"         | false
-      "io.mathan.sonar.test:test-artifact::1.0.1"    | false
-      "io.mathan.sonar.test:test-artifact:jar:1.0.1" | false
-      "io.mathan.sonar.test:test-artifact:jar:1.0.2" | true
-      "io.mathan.sonar.test:test-artifact:pom:1.0.1" | true
-      "::pom:,io.mathan.sonar.test:::"               | false
+    exclusions                                     | included
+    ""                                             | true
+    ":::"                                          | false
+    "io.mathan.sonar.test:::"                      | false
+    "io.mathan.sonar.test:test-artifact::"         | false
+    "io.mathan.sonar.test:test-artifact::1.0.1"    | false
+    "io.mathan.sonar.test:test-artifact:jar:1.0.1" | false
+    "io.mathan.sonar.test:test-artifact:jar:1.0.2" | true
+    "io.mathan.sonar.test:test-artifact:pom:1.0.1" | true
+    "::pom:,io.mathan.sonar.test:::"               | false
   }
 
   def "overrides"(Availability availability, String info, String minor, String major, String critical, String blocker, Severity severity) {
     expect:
-      DependencyFilter filter = configuration()
-      filter.setOverrideInfo(info)
-      filter.setOverrideMinor(minor)
-      filter.setOverrideMajor(major)
-      filter.setOverrideCritical(critical)
-      filter.setOverrideBlocker(blocker)
-      Dependency dependency = dependency(availability)
-      filter.severity(dependency) == severity
+    DependencyFilter filter = configuration()
+    filter.setOverrideInfo(info)
+    filter.setOverrideMinor(minor)
+    filter.setOverrideMajor(major)
+    filter.setOverrideCritical(critical)
+    filter.setOverrideBlocker(blocker)
+    Dependency dependency = dependency(availability)
+    filter.severity(dependency) == severity
     where:
-      availability             | info  | minor | major | critical | blocker | severity
-      Availability.None        | ":::" | ":::" | ":::" | ":::"    | ":::"   | null
-      Availability.Incremental | ":::" | ""    | ""    | ""       | ""      | Severity.INFO
-      Availability.Minor       | ":::" | ""    | ""    | ""       | ""      | Severity.INFO
-      Availability.Major       | ":::" | ""    | ""    | ""       | ""      | Severity.INFO
-      Availability.Incremental | ""    | ":::" | ""    | ""       | ""      | Severity.MINOR
-      Availability.Minor       | ""    | ":::" | ""    | ""       | ""      | Severity.MINOR
-      Availability.Major       | ""    | ":::" | ""    | ""       | ""      | Severity.MINOR
-      Availability.Incremental | ""    | ""    | ":::" | ""       | ""      | Severity.MAJOR
-      Availability.Minor       | ""    | ""    | ":::" | ""       | ""      | Severity.MAJOR
-      Availability.Major       | ""    | ""    | ":::" | ""       | ""      | Severity.MAJOR
-      Availability.Incremental | ""    | ""    | ""    | ":::"    | ""      | Severity.CRITICAL
-      Availability.Minor       | ""    | ""    | ""    | ":::"    | ""      | Severity.CRITICAL
-      Availability.Major       | ""    | ""    | ""    | ":::"    | ""      | Severity.CRITICAL
-      Availability.Incremental | ""    | ""    | ""    | ""       | ":::"   | Severity.BLOCKER
-      Availability.Minor       | ""    | ""    | ""    | ""       | ":::"   | Severity.BLOCKER
-      Availability.Major       | ""    | ""    | ""    | ""       | ":::"   | Severity.BLOCKER
-      Availability.Major       | ":::" | ":::" | ""    | ""       | ""      | Severity.MINOR
-      Availability.Incremental | ":::" | ":::" | ":::" | ""       | ""      | Severity.MAJOR
-      Availability.Incremental | ":::" | ":::" | ":::" | ":::"    | ""      | Severity.CRITICAL
-      Availability.Incremental | ":::" | ":::" | ":::" | ":::"    | ":::"   | Severity.BLOCKER
+    availability             | info  | minor | major | critical | blocker | severity
+    Availability.None        | ":::" | ":::" | ":::" | ":::"    | ":::"   | null
+    Availability.Incremental | ":::" | ""    | ""    | ""       | ""      | Severity.INFO
+    Availability.Minor       | ":::" | ""    | ""    | ""       | ""      | Severity.INFO
+    Availability.Major       | ":::" | ""    | ""    | ""       | ""      | Severity.INFO
+    Availability.Incremental | ""    | ":::" | ""    | ""       | ""      | Severity.MINOR
+    Availability.Minor       | ""    | ":::" | ""    | ""       | ""      | Severity.MINOR
+    Availability.Major       | ""    | ":::" | ""    | ""       | ""      | Severity.MINOR
+    Availability.Incremental | ""    | ""    | ":::" | ""       | ""      | Severity.MAJOR
+    Availability.Minor       | ""    | ""    | ":::" | ""       | ""      | Severity.MAJOR
+    Availability.Major       | ""    | ""    | ":::" | ""       | ""      | Severity.MAJOR
+    Availability.Incremental | ""    | ""    | ""    | ":::"    | ""      | Severity.CRITICAL
+    Availability.Minor       | ""    | ""    | ""    | ":::"    | ""      | Severity.CRITICAL
+    Availability.Major       | ""    | ""    | ""    | ":::"    | ""      | Severity.CRITICAL
+    Availability.Incremental | ""    | ""    | ""    | ""       | ":::"   | Severity.BLOCKER
+    Availability.Minor       | ""    | ""    | ""    | ""       | ":::"   | Severity.BLOCKER
+    Availability.Major       | ""    | ""    | ""    | ""       | ":::"   | Severity.BLOCKER
+    Availability.Major       | ":::" | ":::" | ""    | ""       | ""      | Severity.MINOR
+    Availability.Incremental | ":::" | ":::" | ":::" | ""       | ""      | Severity.MAJOR
+    Availability.Incremental | ":::" | ":::" | ":::" | ":::"    | ""      | Severity.CRITICAL
+    Availability.Incremental | ":::" | ":::" | ":::" | ":::"    | ":::"   | Severity.BLOCKER
   }
 
   DependencyFilter configuration() {
@@ -203,6 +207,8 @@ class DependencyFilterSpec extends Specification {
     dependency.setVersion("1.0.1")
     dependency.setType("jar")
     dependency.setAvailability(Availability.Incremental)
+    dependency.setScope("test")
+    dependency.setClassifier("sources")
     return dependency
   }
 }

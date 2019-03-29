@@ -23,16 +23,16 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import javax.ws.rs.ext.ContextResolver;
 
 public class JacksonObjectMapperProvider implements ContextResolver<ObjectMapper> {
- 
+
   private final ObjectMapper objectMapper;
- 
+
   public JacksonObjectMapperProvider() {
     objectMapper = new ObjectMapper();
     objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     // write timestamp in correct format
     objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
   }
- 
+
   @Override
   public ObjectMapper getContext(Class<?> type) {
     return objectMapper;

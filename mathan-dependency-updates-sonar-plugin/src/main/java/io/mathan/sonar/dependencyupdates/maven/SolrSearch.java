@@ -18,6 +18,7 @@
 package io.mathan.sonar.dependencyupdates.maven;
 
 public class SolrSearch {
+
   private Response response;
 
   public Response getResponse() {

@@ -74,7 +74,7 @@ public class Configuration {
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_EXCLUSIONS)
             .subCategory(Constants.SUB_CATEGORY_INCLUSIONS_EXCLUSIONS)
-            .name("Inclusions")
+            .name("Exclusions")
             .description("Blacklist of dependencies to exclude in the analysis separated by comma. The filter syntax is"
                 + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")

@@ -19,7 +19,6 @@ package io.mathan.sonar.dependencyupdates.rule;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 

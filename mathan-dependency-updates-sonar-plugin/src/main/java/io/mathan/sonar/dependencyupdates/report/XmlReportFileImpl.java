@@ -36,7 +36,7 @@ import org.sonar.api.scan.filesystem.PathResolver;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
-public class XmlReportFileImpl implements XmlReportFile{
+public class XmlReportFileImpl implements XmlReportFile {
 
   private static final Logger LOGGER = Loggers.get(XmlReportFileImpl.class);
 
@@ -68,6 +68,7 @@ public class XmlReportFileImpl implements XmlReportFile{
     }
     return report;
   }
+
   public static XmlReportFileImpl getXmlReport(Configuration config, FileSystem fileSystem, PathResolver pathResolver) throws FileNotFoundException {
     String path = config.get(Constants.CONFIG_REPORT_PATH_PROPERTY).orElse(Constants.CONFIG_REPORT_PATH_DEFAULT);
     File report = pathResolver.relativeFile(fileSystem.baseDir(), path);

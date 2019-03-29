@@ -20,7 +20,6 @@ package io.mathan.sonar.dependencyupdates.parser;
 import io.mathan.sonar.dependencyupdates.Utils;
 import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
 import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
-import io.mathan.sonar.dependencyupdates.report.XmlReportFileImpl;
 import java.io.IOException;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -41,7 +40,7 @@ public class ReportParser {
 
   public static Analysis parse(List<XmlReportFile> files) throws IOException, XMLStreamException {
     Analysis analysis = new Analysis();
-    for(XmlReportFile file:files) {
+    for (XmlReportFile file : files) {
       parse(analysis, file);
     }
     analysis.finish();

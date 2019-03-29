@@ -82,7 +82,7 @@ public class Dependency {
   }
 
   public int getUpgrades() {
-    return minors.size()+majors.size();
+    return minors.size() + majors.size();
   }
 
   public String getArtifactId() {

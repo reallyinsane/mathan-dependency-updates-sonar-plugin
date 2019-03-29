@@ -17,6 +17,7 @@
  */
 package io.mathan.sonar.dependencyupdates;
 
+import io.mathan.sonar.dependencyupdates.filter.PatternArtifactFilter;
 import io.mathan.sonar.dependencyupdates.parser.Dependency;
 import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
 import java.util.Arrays;
@@ -24,7 +25,6 @@ import org.apache.maven.artifact.Artifact;
 import org.apache.maven.artifact.DefaultArtifact;
 import org.apache.maven.artifact.handler.DefaultArtifactHandler;
 import org.apache.maven.artifact.resolver.filter.ArtifactFilter;
-import org.apache.maven.shared.artifact.filter.StrictPatternIncludesArtifactFilter;
 import org.sonar.api.batch.rule.Severity;
 import org.sonar.api.batch.sensor.SensorContext;
 
@@ -59,10 +59,10 @@ public class DependencyFilter {
   }
 
   static ArtifactFilter getIncludeFilter(String pattern) {
-    if(pattern.trim().isEmpty()) {
+    if (pattern.trim().isEmpty()) {
       return new ExcludeArtifactFilter();
     } else {
-      return new StrictPatternIncludesArtifactFilter(Arrays.asList(pattern.split(",")));
+      return new PatternArtifactFilter(Arrays.asList(pattern.split(",")));
     }
   }
 
@@ -71,7 +71,7 @@ public class DependencyFilter {
         Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_INCREMENTAL).orElse(Constants.CONFIG_UPDATE_INCREMENTAL_DEFAULT)),
         Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_MINOR).orElse(Constants.CONFIG_UPDATE_MINOR_DEFAULT)),
         Severity.valueOf(context.config().get(Constants.CONFIG_UPDATE_MAJOR).orElse(Constants.CONFIG_UPDATE_MAJOR_DEFAULT)),
-        context.config().get(Constants.CONFIG_INCLUSIONS).orElse(":::"),
+        context.config().get(Constants.CONFIG_INCLUSIONS).orElse(":::::"),
         context.config().get(Constants.CONFIG_EXCLUSIONS).orElse(""),
         context.config().get(Constants.CONFIG_OVERRIDE_INFO).orElse(""),
         context.config().get(Constants.CONFIG_OVERRIDE_MINOR).orElse(""),
@@ -121,7 +121,7 @@ public class DependencyFilter {
   }
 
   public Severity severity(Dependency dependency) {
-    if(dependency.getAvailability()== Availability.None) {
+    if (dependency.getAvailability() == Availability.None) {
       return null;
     }
     Artifact artifact = asArtifact(dependency);

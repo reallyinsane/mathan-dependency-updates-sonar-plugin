@@ -19,8 +19,6 @@ package io.mathan.sonar.dependencyupdates.parser;
 
 import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
 import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
-import io.mathan.sonar.dependencyupdates.report.XmlReportFileImpl;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;

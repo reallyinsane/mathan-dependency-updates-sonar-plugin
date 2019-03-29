@@ -29,6 +29,7 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
 public final class Metrics implements org.sonar.api.measures.Metrics {
+
   private static final Logger LOGGER = Loggers.get(Metrics.class);
 
   private static final String DOMAIN = "Dependency Updates";
@@ -98,10 +99,10 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     calculateUpgrades(context, analysis);
     calculateUpgradesMissed(context, analysis);
   }
-  
+
   private static void calculatePatches(SensorContext context, Analysis analysis) {
     long count = analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count();
-    LOGGER.info("calculatePatches="+count);
+    LOGGER.info("calculatePatches=" + count);
     context.<Integer>newMeasure().forMetric(Metrics.PATCHES).on(context.module()).withValue(
         Math.toIntExact(count)).save();
 
@@ -109,20 +110,20 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
   private static void calculatePatchesMissed(SensorContext context, Analysis analysis) {
     long sum = analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpdates)).getSum();
-    LOGGER.info("calculatePatchesMissed="+sum);
+    LOGGER.info("calculatePatchesMissed=" + sum);
     context.<Integer>newMeasure().forMetric(Metrics.PATCHES_MISSED).on(context.module()).withValue(
         Math.toIntExact(sum)).save();
   }
 
   private static void calculateUpgrades(SensorContext context, Analysis analysis) {
     long count = analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count();
-    LOGGER.info("calculateUpgrades="+count);
+    LOGGER.info("calculateUpgrades=" + count);
     context.<Integer>newMeasure().forMetric(Metrics.UPGRADES).on(context.module()).withValue(Math.toIntExact(count)).save();
   }
 
   private static void calculateUpgradesMissed(SensorContext context, Analysis analysis) {
     long sum = analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpgrades)).getSum();
-    LOGGER.info("calculateUpgradesMissed="+sum);
+    LOGGER.info("calculateUpgradesMissed=" + sum);
     context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(context.module()).withValue(
         Math.toIntExact(sum)).save();
   }

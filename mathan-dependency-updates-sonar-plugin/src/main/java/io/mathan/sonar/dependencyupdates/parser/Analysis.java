@@ -23,6 +23,7 @@ import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
 public class Analysis {
+
   private static final Logger LOGGER = Loggers.get(Analysis.class);
 
   private int nextIncrementalAvailable = 0;
@@ -59,12 +60,12 @@ public class Analysis {
   }
 
   void finish() {
-    this.nextIncrementalAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getIncrementals().size()>0).count()
-        +dependencies.stream().filter(dependency -> dependency.getIncrementals().size()>0).count()));
-    this.nextMinorAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getMinors().size()>0).count()
-        +dependencies.stream().filter(dependency -> dependency.getMinors().size()>0).count()));
-    this.nextMajorAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getMajors().size()>0).count()
-        +dependencies.stream().filter(dependency -> dependency.getMajors().size()>0).count()));
+    this.nextIncrementalAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getIncrementals().size() > 0).count()
+        + dependencies.stream().filter(dependency -> dependency.getIncrementals().size() > 0).count()));
+    this.nextMinorAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getMinors().size() > 0).count()
+        + dependencies.stream().filter(dependency -> dependency.getMinors().size() > 0).count()));
+    this.nextMajorAvailable = Math.toIntExact((dependencyManagements.stream().filter(dependency -> dependency.getMajors().size() > 0).count()
+        + dependencies.stream().filter(dependency -> dependency.getMajors().size() > 0).count()));
   }
 
 }

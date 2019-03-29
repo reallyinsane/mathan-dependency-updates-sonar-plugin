@@ -18,6 +18,7 @@
 package io.mathan.sonar.dependencyupdates.maven;
 
 public class Doc {
+
   private String id;
   private String g;
   private String a;

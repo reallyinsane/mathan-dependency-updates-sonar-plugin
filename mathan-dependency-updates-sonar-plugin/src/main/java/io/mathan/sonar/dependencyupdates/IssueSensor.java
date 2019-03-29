@@ -17,9 +17,9 @@
  */
 package io.mathan.sonar.dependencyupdates;
 
-import io.mathan.sonar.dependencyupdates.parser.ReportParser;
 import io.mathan.sonar.dependencyupdates.parser.Analysis;
 import io.mathan.sonar.dependencyupdates.parser.Dependency;
+import io.mathan.sonar.dependencyupdates.parser.ReportParser;
 import io.mathan.sonar.dependencyupdates.report.XmlReportFileImpl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
