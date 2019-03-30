@@ -74,24 +74,14 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Integer> VERSION_DISTANCE = new Metric.Builder(Metrics.KEY_VERSION_DISTANCE, "Version Distance", ValueType.INT)
+  static final Metric<Integer> VERSION_DISTANCE = new Metric.Builder(Metrics.KEY_VERSION_DISTANCE, "Version Distance", ValueType.RATING)
       .setDescription("Version distance of all dependencies")
       .setDirection(Metric.DIRECTION_BETTER)
       .setQualitative(Boolean.TRUE)
       .setDomain(Metrics.DOMAIN)
-      .setWorstValue(0.0)
+      .setWorstValue(5.0)
       .setBestValue(1.0)
       .create();
-
-  @Override
-  public List<Metric> getMetrics() {
-    return Arrays.asList(
-        Metrics.PATCHES,
-        Metrics.PATCHES_MISSED,
-        Metrics.UPGRADES,
-        Metrics.UPGRADES_REPEATEDLY
-    );
-  }
 
   /**
    * Calculates all metrics provided by this Sonar-Plugin based on the given Analysis.
@@ -101,6 +91,87 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     calculatePatchesMissed(context, analysis);
     calculateUpgrades(context, analysis);
     calculateUpgradesMissed(context, analysis);
+    calculateVersionDistance(context, analysis);
+  }
+
+  private static void calculateVersionDistance(SensorContext context, Analysis analysis) {
+    int rating;
+    int majors = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getMajors().size() > 0).count());
+    if (majors > 0) {
+      rating = calculateVersionDistanceRatingMajor(majors);
+    } else {
+      int minors = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getMinors().size() > 0).count());
+      if (minors > 0) {
+        rating = calculateVersionDistanceRatingMinor(minors);
+      } else {
+        int incrementals = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count());
+        rating = calculateVersionDistanceRatingIncremental(incrementals);
+      }
+    }
+    context.<Integer>newMeasure().forMetric(Metrics.VERSION_DISTANCE).on(context.module()).withValue(
+        Math.toIntExact(rating)).save();
+  }
+
+  private static int calculateVersionDistanceRatingIncremental(int count) {
+    switch (count) {
+      case 0:
+      case 1:
+      case 2:
+        return 1; // A
+      case 3:
+      case 4:
+        return 2; // B
+      case 5:
+      case 6:
+        return 3; // C
+      case 7:
+      case 8:
+        return 4; // D
+      default:
+        return 5; // E
+    }
+  }
+
+  private static int calculateVersionDistanceRatingMinor(int count) {
+    switch (count) {
+      case 0:
+        return 1; // A
+      case 1:
+      case 2:
+        return 2; // B
+      case 3:
+      case 4:
+        return 3; // C
+      case 5:
+      case 6:
+        return 4; // D
+      default:
+        return 5; // E
+    }
+  }
+
+  private static int calculateVersionDistanceRatingMajor(int count) {
+    switch (count) {
+      case 0:
+        return 1; // A
+      case 1:
+        return 2; // C
+      case 2:
+        return 3; // D
+      default:
+        return 5; // E
+    }
+  }
+
+  @Override
+  public List<Metric> getMetrics() {
+    return Arrays.asList(
+        Metrics.PATCHES,
+        Metrics.PATCHES_MISSED,
+        Metrics.UPGRADES,
+        Metrics.UPGRADES_REPEATEDLY,
+        Metrics.VERSION_DISTANCE
+    );
   }
 
   private static void calculatePatches(SensorContext context, Analysis analysis) {

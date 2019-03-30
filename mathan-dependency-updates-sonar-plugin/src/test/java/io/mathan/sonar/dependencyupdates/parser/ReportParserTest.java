@@ -32,7 +32,7 @@ public class ReportParserTest {
 
   @Test
   public void parseReport() throws Exception {
-    InputStream inputStream = getClass().getClassLoader().getResourceAsStream("report/dependency-updates-report.xml");
+    InputStream inputStream = getClass().getClassLoader().getResourceAsStream("report/sample-dependency-updates-report.xml");
 
     Analysis analysis = ReportParser.parse(Arrays.asList((XmlReportFile) () -> inputStream));
 

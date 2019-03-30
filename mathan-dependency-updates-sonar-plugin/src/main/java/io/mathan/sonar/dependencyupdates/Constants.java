@@ -23,8 +23,7 @@ import org.sonar.api.rule.Severity;
 public final class Constants {
 
   public static final String CONFIG_REPORT_PATH_PROPERTY = "sonar.dependencyUpdates.reportPath";
-  public static final String CONFIG_REPORT_PATH_DEFAULT = "target/"
-      + "";
+  public static final String CONFIG_REPORT_PATH_DEFAULT = "target/dependency-updates-report.xml";
 
   static final String CONFIG_UPDATE_INCREMENTAL = "sonar.dependencyUpdates.updateIncremental";
   static final String CONFIG_UPDATE_INCREMENTAL_DEFAULT = Severity.MINOR;

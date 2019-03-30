@@ -4,13 +4,12 @@
     <parent>
         <groupId>org.sonarsource.parent</groupId>
         <artifactId>parent</artifactId>
-        <version>40</version>
+        <version>49</version>
     </parent>
     <groupId>io.mathan.sonar</groupId>
     <artifactId>mathan-dependency-updates-sonar-plugin-reactor</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <name>mathan-dependency-updates-sonar-plugin</name>
     <properties>
         <license.name>AL2</license.name>
         <license.owner>Matthias Hanisch</license.owner>
@@ -71,7 +70,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-release-plugin</artifactId>
-                <version>${version.release.plugin}</version>
+                <version>2.3.2</version>
                 <configuration>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <useReleaseProfile>false</useReleaseProfile>
@@ -93,6 +92,14 @@
                             </includes>
                         </fileSet>
                     </fileSets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <formats>xml</formats>
                 </configuration>
             </plugin>
         </plugins>

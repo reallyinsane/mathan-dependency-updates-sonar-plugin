@@ -70,11 +70,11 @@ public class Dependency {
     return incrementals;
   }
 
-  List<String> getMajors() {
+  public List<String> getMajors() {
     return majors;
   }
 
-  List<String> getMinors() {
+  public List<String> getMinors() {
     return minors;
   }
 
@@ -174,5 +174,10 @@ public class Dependency {
   @Override
   public int hashCode() {
     return Objects.hash(groupId, artifactId, version, scope, classifier, type, next, availability, incrementals, minors, majors);
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s:%s:%s", groupId, artifactId, version);
   }
 }

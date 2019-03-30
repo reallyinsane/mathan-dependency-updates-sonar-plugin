@@ -33,7 +33,7 @@ import org.sonar.api.utils.log.Loggers;
 public class MetricSensor implements org.sonar.api.batch.sensor.Sensor {
 
   private static final Logger LOGGER = Loggers.get(MetricSensor.class);
-  private static final String SENSOR_NAME = "Dependency-Updates2";
+  private static final String SENSOR_NAME = "MDU-MetricSensor";
 
   @Override
   public void describe(SensorDescriptor descriptor) {

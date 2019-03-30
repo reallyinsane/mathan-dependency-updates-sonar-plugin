@@ -42,7 +42,7 @@ import org.sonar.api.utils.log.Profiler;
 public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
 
   private static final Logger LOGGER = Loggers.get(IssueSensor.class);
-  private static final String SENSOR_NAME = "Dependency-Updates";
+  private static final String SENSOR_NAME = "MDU-IssueSensor";
 
   private final FileSystem fileSystem;
   private final PathResolver pathResolver;
