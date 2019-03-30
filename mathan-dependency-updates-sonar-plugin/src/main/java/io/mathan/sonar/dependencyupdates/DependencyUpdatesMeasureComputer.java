@@ -42,30 +42,28 @@ public class DependencyUpdatesMeasureComputer implements MeasureComputer {
 
   @Override
   public void compute(MeasureComputerContext context) {
-    sumMeasure(context, Metrics.KEY_PATCHES);
-    sumMeasure(context, Metrics.KEY_PATCHES_MISSED);
-    sumMeasure(context, Metrics.KEY_UPGRADES);
-    sumMeasure(context, Metrics.KEY_UPGRADES_MISSED);
-    maxMeasure(context);
+    if (context.getComponent().getType() != Type.FILE) {
+      sumMeasure(context, Metrics.KEY_PATCHES);
+      sumMeasure(context, Metrics.KEY_PATCHES_MISSED);
+      sumMeasure(context, Metrics.KEY_UPGRADES);
+      sumMeasure(context, Metrics.KEY_UPGRADES_MISSED);
+      maxMeasure(context);
+    }
   }
 
   private void maxMeasure(MeasureComputerContext context) {
-    if (context.getComponent().getType() != Type.FILE) {
-      int max = 0;
-      for (Measure m : context.getChildrenMeasures(Metrics.KEY_REFRESH_PERIOD)) {
-        max = Math.max(max, m.getIntValue());
-      }
-      context.addMeasure(Metrics.KEY_REFRESH_PERIOD, max);
+    int max = 0;
+    for (Measure m : context.getChildrenMeasures(Metrics.KEY_REFRESH_PERIOD)) {
+      max = Math.max(max, m.getIntValue());
     }
+    context.addMeasure(Metrics.KEY_REFRESH_PERIOD, max);
   }
 
   private void sumMeasure(MeasureComputerContext context, String metricKey) {
-    if (context.getComponent().getType() != Type.FILE) {
-      int sum = 0;
-      for (Measure m : context.getChildrenMeasures(metricKey)) {
-        sum += m.getIntValue();
-      }
-      context.addMeasure(metricKey, sum);
+    int sum = 0;
+    for (Measure m : context.getChildrenMeasures(metricKey)) {
+      sum += m.getIntValue();
     }
+    context.addMeasure(metricKey, sum);
   }
 }
