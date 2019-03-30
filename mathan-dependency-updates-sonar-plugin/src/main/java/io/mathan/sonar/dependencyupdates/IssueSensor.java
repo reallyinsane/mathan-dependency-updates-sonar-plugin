@@ -89,7 +89,6 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
   }
 
   private void addIssues(SensorContext context, Analysis analysis, DependencyFilter filter) {
-
     addIssues(context, filter, analysis.getDependencyManagements(), true);
     addIssues(context, filter, analysis.getDependencies(), false);
   }
@@ -117,6 +116,7 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
     try {
       Analysis analysis = parseAnalysis(sensorContext);
       addIssues(sensorContext, analysis, filter);
+      Metrics.calculateMetricsModule(sensorContext, analysis);
     } catch (FileNotFoundException e) {
       LOGGER.info("Analysis skipped/aborted due to missing report file");
       LOGGER.debug(e.getMessage(), e);

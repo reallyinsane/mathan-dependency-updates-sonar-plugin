@@ -29,11 +29,11 @@ public final class Plugin implements org.sonar.api.Plugin {
   public void define(Context context) {
     context.addExtensions(Arrays.asList(
         IssueSensor.class,
-        MetricSensor.class,
         Metrics.class,
         MathanProfile.class,
         MathanLanguage.class,
-        UsingOutdatedDepencencies.class
+        UsingOutdatedDepencencies.class,
+        DependencyUpdatesMeasureComputer.class
         )
     );
     context.addExtensions(Configuration.getPropertyDefinitions());

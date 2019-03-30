@@ -23,6 +23,7 @@ import io.mathan.sonar.dependencyupdates.parser.Dependency;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.sonar.api.batch.fs.InputComponent;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.measures.Metric.ValueType;
@@ -35,12 +36,12 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
   private static final String DOMAIN = "Dependency Updates";
 
-  private static final String KEY_PATCHES = "metrics.patches";
-  private static final String KEY_PATCHES_MISSED = "metrics.patches.repeatedly";
-  private static final String KEY_UPGRADES = "metrics.upgrades";
-  private static final String KEY_UPGRADES_MISSED = "metrics.upgrades.repeatedly";
+  public static final String KEY_PATCHES = "metrics.patches";
+  public static final String KEY_PATCHES_MISSED = "metrics.patches.repeatedly";
+  public static final String KEY_UPGRADES = "metrics.upgrades";
+  public static final String KEY_UPGRADES_MISSED = "metrics.upgrades.repeatedly";
 
-  private static final String KEY_VERSION_DISTANCE = "metrics.version.distance";
+  public static final String KEY_REFRESH_PERIOD = "metrics.version.distance";
 
   static final Metric<Integer> PATCHES = new Metric.Builder(Metrics.KEY_PATCHES, "Dependencies to patch", ValueType.INT)
       .setDescription("Dependencies with patches to apply")
@@ -74,8 +75,8 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Integer> VERSION_DISTANCE = new Metric.Builder(Metrics.KEY_VERSION_DISTANCE, "Version Distance", ValueType.RATING)
-      .setDescription("Version distance of all dependencies")
+  static final Metric<Integer> REFRESH_PERIOD = new Metric.Builder(Metrics.KEY_REFRESH_PERIOD, "Refresh period", ValueType.RATING)
+      .setDescription("Rating of the refresh period")
       .setDirection(Metric.DIRECTION_BETTER)
       .setQualitative(Boolean.TRUE)
       .setDomain(Metrics.DOMAIN)
@@ -86,15 +87,20 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
   /**
    * Calculates all metrics provided by this Sonar-Plugin based on the given Analysis.
    */
-  public static void calculateMetrics(SensorContext context, Analysis analysis) {
-    calculatePatches(context, analysis);
-    calculatePatchesMissed(context, analysis);
-    calculateUpgrades(context, analysis);
-    calculateUpgradesMissed(context, analysis);
-    calculateVersionDistance(context, analysis);
+  public static void calculateMetricsModule(SensorContext context, Analysis analysis) {
+    calculateMetrics(context, context.fileSystem().inputFile(context.fileSystem().predicates().hasRelativePath("pom.xml")), analysis);
   }
 
-  private static void calculateVersionDistance(SensorContext context, Analysis analysis) {
+
+  private static void calculateMetrics(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    calculatePatches(context, inputComponent, analysis);
+    calculatePatchesMissed(context, inputComponent, analysis);
+    calculateUpgrades(context, inputComponent, analysis);
+    calculateUpgradesMissed(context, inputComponent, analysis);
+    calculateVersionDistance(context, inputComponent, analysis);
+  }
+
+  private static void calculateVersionDistance(SensorContext context, InputComponent inputComponent, Analysis analysis) {
     int rating;
     int majors = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getMajors().size() > 0).count());
     if (majors > 0) {
@@ -108,7 +114,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
         rating = calculateVersionDistanceRatingIncremental(incrementals);
       }
     }
-    context.<Integer>newMeasure().forMetric(Metrics.VERSION_DISTANCE).on(context.module()).withValue(
+    context.<Integer>newMeasure().forMetric(Metrics.REFRESH_PERIOD).on(inputComponent).withValue(
         Math.toIntExact(rating)).save();
   }
 
@@ -163,6 +169,34 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     }
   }
 
+  private static void calculatePatches(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    long count = analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count();
+    LOGGER.info("calculatePatches=" + count);
+    context.<Integer>newMeasure().forMetric(Metrics.PATCHES).on(inputComponent).withValue(
+        Math.toIntExact(count)).save();
+
+  }
+
+  private static void calculatePatchesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    long sum = analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpdates)).getSum();
+    LOGGER.info("calculatePatchesMissed=" + sum);
+    context.<Integer>newMeasure().forMetric(Metrics.PATCHES_MISSED).on(inputComponent).withValue(
+        Math.toIntExact(sum)).save();
+  }
+
+  private static void calculateUpgrades(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    long count = analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count();
+    LOGGER.info("calculateUpgrades=" + count);
+    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES).on(inputComponent).withValue(Math.toIntExact(count)).save();
+  }
+
+  private static void calculateUpgradesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    long sum = analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpgrades)).getSum();
+    LOGGER.info("calculateUpgradesMissed=" + sum);
+    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(inputComponent).withValue(
+        Math.toIntExact(sum)).save();
+  }
+
   @Override
   public List<Metric> getMetrics() {
     return Arrays.asList(
@@ -170,36 +204,8 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
         Metrics.PATCHES_MISSED,
         Metrics.UPGRADES,
         Metrics.UPGRADES_REPEATEDLY,
-        Metrics.VERSION_DISTANCE
+        Metrics.REFRESH_PERIOD
     );
-  }
-
-  private static void calculatePatches(SensorContext context, Analysis analysis) {
-    long count = analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count();
-    LOGGER.info("calculatePatches=" + count);
-    context.<Integer>newMeasure().forMetric(Metrics.PATCHES).on(context.module()).withValue(
-        Math.toIntExact(count)).save();
-
-  }
-
-  private static void calculatePatchesMissed(SensorContext context, Analysis analysis) {
-    long sum = analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpdates)).getSum();
-    LOGGER.info("calculatePatchesMissed=" + sum);
-    context.<Integer>newMeasure().forMetric(Metrics.PATCHES_MISSED).on(context.module()).withValue(
-        Math.toIntExact(sum)).save();
-  }
-
-  private static void calculateUpgrades(SensorContext context, Analysis analysis) {
-    long count = analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count();
-    LOGGER.info("calculateUpgrades=" + count);
-    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES).on(context.module()).withValue(Math.toIntExact(count)).save();
-  }
-
-  private static void calculateUpgradesMissed(SensorContext context, Analysis analysis) {
-    long sum = analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpgrades)).getSum();
-    LOGGER.info("calculateUpgradesMissed=" + sum);
-    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(context.module()).withValue(
-        Math.toIntExact(sum)).save();
   }
 
 }

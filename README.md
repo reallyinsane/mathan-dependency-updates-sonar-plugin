@@ -23,7 +23,19 @@ The plugin keeps track of the following statistics:
 * Total number of dependencies with upgrades available (minor and major updates)
 * Total number of patches missed
 * Total number of upgrades missed
+* Rating of the refresh period
 
+#### Refresh period rating
+
+In contrast to the other four metrics the refresh period is a rating of the project and its modules. The rating is based on the number of dependencies with incremental, minor or major updates available.
+
+Rating      | Incremental | Minor | Major
+------------|-------------|-------|------
+![a](a.png) | 0-2         | 0     | 0 
+![b](b.png) | 3-4         | 1-2   | -
+![c](c.png) | 5-6         | 3-4   | 1  
+![d](d.png) | 7-8         | 5-6   | 2
+![e](e.png) | 9-          | 7-    | 3-
 
 ## Installation
 
