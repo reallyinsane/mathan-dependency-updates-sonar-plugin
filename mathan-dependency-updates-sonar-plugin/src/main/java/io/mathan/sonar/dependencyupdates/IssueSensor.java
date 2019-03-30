@@ -15,11 +15,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates;
 
 import io.mathan.sonar.dependencyupdates.parser.Analysis;
 import io.mathan.sonar.dependencyupdates.parser.Dependency;
 import io.mathan.sonar.dependencyupdates.parser.ReportParser;
+import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
 import io.mathan.sonar.dependencyupdates.report.XmlReportFileImpl;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -62,6 +64,8 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
       case Major:
         sb.append("Major update ");
         break;
+      default:
+        throw new IllegalArgumentException("Unknown availability " + dependency.getAvailability());
     }
     sb.append(String.format("available for dependency %s:%s:%s%s. Next version is %s.", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(),
         dependencyManagement ? " (see dependency management)" : "", dependency.getNext()));
@@ -91,7 +95,7 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
   }
 
   private Analysis parseAnalysis(SensorContext context) throws IOException, XMLStreamException {
-    XmlReportFileImpl report = XmlReportFileImpl.getXmlReport(context.config(), fileSystem, this.pathResolver);
+    XmlReportFile report = XmlReportFileImpl.getReport(context.config(), fileSystem, this.pathResolver);
     return ReportParser.parse(Arrays.asList(report));
   }
 

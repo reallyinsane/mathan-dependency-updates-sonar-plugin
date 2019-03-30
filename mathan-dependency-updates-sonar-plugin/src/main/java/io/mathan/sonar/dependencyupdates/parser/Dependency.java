@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates.parser;
 
 import java.util.ArrayList;
@@ -39,26 +40,26 @@ public class Dependency {
   private List<String> majors = new ArrayList<>();
 
 
-  public enum Availability {
-    Incremental("incremental available"),
-    Minor("minor available"),
-    Major("major available"),
-    None("no new available");
-    private final String name;
-
-    Availability(String name) {
-      this.name = name;
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
     }
-
-    public static Availability fromString(String name) {
-      Availability[] availabilities = Availability.values();
-      for (Availability availability : availabilities) {
-        if (name.equals(availability.name)) {
-          return availability;
-        }
-      }
-      return null;
+    if (o == null || getClass() != o.getClass()) {
+      return false;
     }
+    Dependency that = (Dependency) o;
+    return groupId.equals(that.groupId)
+        && artifactId.equals(that.artifactId)
+        && version.equals(that.version)
+        && Objects.equals(scope, that.scope)
+        && Objects.equals(classifier, that.classifier)
+        && Objects.equals(type, that.type)
+        && Objects.equals(next, that.next)
+        && availability == that.availability
+        && Objects.equals(incrementals, that.incrementals)
+        && Objects.equals(minors, that.minors)
+        && Objects.equals(majors, that.majors);
   }
 
   public Availability getAvailability() {
@@ -145,26 +146,29 @@ public class Dependency {
     this.version = version;
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
+  public enum Availability {
+    Incremental("incremental available"),
+    Minor("minor available"),
+    Major("major available"),
+    None("no new available");
+    private final String name;
+
+    Availability(String name) {
+      this.name = name;
     }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
+
+    /**
+     * Creates the enum value for availability based on the status string for the dependency from the dependency-updates-report.
+     */
+    public static Availability fromString(String name) {
+      Availability[] availabilities = Availability.values();
+      for (Availability availability : availabilities) {
+        if (name.equals(availability.name)) {
+          return availability;
+        }
+      }
+      return null;
     }
-    Dependency that = (Dependency) o;
-    return groupId.equals(that.groupId) &&
-        artifactId.equals(that.artifactId) &&
-        version.equals(that.version) &&
-        Objects.equals(scope, that.scope) &&
-        Objects.equals(classifier, that.classifier) &&
-        Objects.equals(type, that.type) &&
-        Objects.equals(next, that.next) &&
-        availability == that.availability &&
-        Objects.equals(incrementals, that.incrementals) &&
-        Objects.equals(minors, that.minors) &&
-        Objects.equals(majors, that.majors);
   }
 
   @Override

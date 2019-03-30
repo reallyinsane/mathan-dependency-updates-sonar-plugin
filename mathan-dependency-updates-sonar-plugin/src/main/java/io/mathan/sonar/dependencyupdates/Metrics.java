@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates;
 
 import io.mathan.sonar.dependencyupdates.parser.Analysis;
@@ -89,10 +90,12 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
         Metrics.PATCHES_MISSED,
         Metrics.UPGRADES,
         Metrics.UPGRADES_REPEATEDLY
-        //Metrics.VERSION_DISTANCE
     );
   }
 
+  /**
+   * Calculates all metrics provided by this Sonar-Plugin based on the given Analysis.
+   */
   public static void calculateMetrics(SensorContext context, Analysis analysis) {
     calculatePatches(context, analysis);
     calculatePatchesMissed(context, analysis);

@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates.rule;
 
 import io.mathan.sonar.dependencyupdates.Constants;
@@ -37,9 +38,9 @@ public class UsingOutdatedDepencencies implements RulesDefinition {
     rule.setStatus(RuleStatus.READY);
     rule.addOwaspTop10(OwaspTop10.A9);
 
-    String description = "<p>Dependencies, such as libraries, frameworks, and other software modules, will be almost outdated after a period of time. " +
-        "In general dependencies should be updated on a regular basis. Applications using outdated dependencies will more likely be affected by vulnerabilities. " +
-        "On the other hand applications updating their dependencies profit from vulnerabilities fixes faster.</p>";
+    String description = "<p>Dependencies, such as libraries, frameworks, and other software modules, will be almost outdated after a period of time. "
+        + "In general dependencies should be updated on a regular basis. Applications using outdated dependencies will more likely be affected by vulnerabilities. "
+        + "On the other hand applications updating their dependencies profit from vulnerabilities fixes faster.</p>";
     rule.setHtmlDescription(description);
     repo.done();
   }

@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates;
 
 import org.sonar.api.rule.Severity;
@@ -22,7 +23,8 @@ import org.sonar.api.rule.Severity;
 public final class Constants {
 
   public static final String CONFIG_REPORT_PATH_PROPERTY = "sonar.dependencyUpdates.reportPath";
-  public static final String CONFIG_REPORT_PATH_DEFAULT = "target/dependency-updates-report.xml";
+  public static final String CONFIG_REPORT_PATH_DEFAULT = "target/"
+      + "";
 
   static final String CONFIG_UPDATE_INCREMENTAL = "sonar.dependencyUpdates.updateIncremental";
   static final String CONFIG_UPDATE_INCREMENTAL_DEFAULT = Severity.MINOR;

@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates.report;
 
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -69,7 +70,12 @@ public class XmlReportFileImpl implements XmlReportFile {
     return report;
   }
 
-  public static XmlReportFileImpl getXmlReport(Configuration config, FileSystem fileSystem, PathResolver pathResolver) throws FileNotFoundException {
+  /**
+   * Returns a {@link XmlReportFile} for a dependency-updates-report found.
+   *
+   * @throws FileNotFoundException If no report could be found.
+   */
+  public static XmlReportFile getReport(Configuration config, FileSystem fileSystem, PathResolver pathResolver) throws FileNotFoundException {
     String path = config.get(Constants.CONFIG_REPORT_PATH_PROPERTY).orElse(Constants.CONFIG_REPORT_PATH_DEFAULT);
     File report = pathResolver.relativeFile(fileSystem.baseDir(), path);
     report = checkReport(report);

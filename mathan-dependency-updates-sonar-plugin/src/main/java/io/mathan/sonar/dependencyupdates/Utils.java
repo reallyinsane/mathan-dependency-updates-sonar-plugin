@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates;
 
 import javax.xml.stream.FactoryConfigurationError;
@@ -26,6 +27,9 @@ public final class Utils {
   private Utils() {
   }
 
+  /**
+   * Creates a Stax-Parser for parsing XMLs.
+   */
   public static SMInputFactory newStaxParser() throws FactoryConfigurationError {
     XMLInputFactory xmlFactory = XMLInputFactory.newInstance();
     xmlFactory.setProperty(XMLInputFactory.IS_COALESCING, Boolean.TRUE);

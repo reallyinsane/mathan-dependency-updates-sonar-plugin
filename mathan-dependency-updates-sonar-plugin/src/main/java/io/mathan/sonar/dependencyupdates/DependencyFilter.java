@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates;
 
 import io.mathan.sonar.dependencyupdates.filter.PatternArtifactFilter;
@@ -58,13 +59,6 @@ public class DependencyFilter {
     return filter;
   }
 
-  static ArtifactFilter getIncludeFilter(String pattern) {
-    if (pattern.trim().isEmpty()) {
-      return new ExcludeArtifactFilter();
-    } else {
-      return new PatternArtifactFilter(Arrays.asList(pattern.split(",")));
-    }
-  }
 
   static DependencyFilter create(SensorContext context) {
     return create(
@@ -120,6 +114,21 @@ public class DependencyFilter {
     this.overrideBlocker = getIncludeFilter(overrideBlocker);
   }
 
+  private static ArtifactFilter getIncludeFilter(String pattern) {
+    if (pattern.trim().isEmpty()) {
+      return new ExcludeArtifactFilter();
+    } else {
+      return new PatternArtifactFilter(Arrays.asList(pattern.split(",")));
+    }
+  }
+
+  /**
+   * Determines the severity of an issue to create for a dependency with updates available. The severity depends on the type of update available (incremental, minor, major) and the configuration of
+   * this Sonar-Plugin.
+   *
+   * @param dependency The dependency to determine the severity for.
+   * @return The Severity if an issue should be reported for the dependency or <code>null</code> if no issue should be created.
+   */
   public Severity severity(Dependency dependency) {
     if (dependency.getAvailability() == Availability.None) {
       return null;

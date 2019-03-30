@@ -15,6 +15,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package io.mathan.sonar.dependencyupdates.parser;
 
 import io.mathan.sonar.dependencyupdates.Utils;
@@ -38,12 +39,14 @@ public class ReportParser {
   private ReportParser() {
   }
 
+  /**
+   * Creates an Analysis based on one or more dependency-update-reports.
+   */
   public static Analysis parse(List<XmlReportFile> files) throws IOException, XMLStreamException {
     Analysis analysis = new Analysis();
     for (XmlReportFile file : files) {
       parse(analysis, file);
     }
-    analysis.finish();
     return analysis;
   }
 
