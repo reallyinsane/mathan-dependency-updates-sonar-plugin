@@ -25,6 +25,10 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.Assert;
 import org.junit.Test;
+import org.sonar.api.config.Configuration;
+import org.sonar.api.config.Settings;
+import org.sonar.api.config.internal.ConfigurationBridge;
+import org.sonar.api.config.internal.MapSettings;
 
 public class ReportParserTest {
 
@@ -34,7 +38,9 @@ public class ReportParserTest {
   public void parseReport() throws Exception {
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("report/sample-dependency-updates-report.xml");
 
-    Analysis analysis = ReportParser.parse(Arrays.asList((XmlReportFile) () -> inputStream));
+    Settings settings = new MapSettings();
+    Configuration configuration = new ConfigurationBridge(settings);
+    Analysis analysis = new ReportParser(configuration).parse(Arrays.asList((XmlReportFile) () -> inputStream));
 
     List<Dependency> dependencyManagements = analysis.getDependencyManagements();
     Assert.assertEquals(4, dependencyManagements.size());

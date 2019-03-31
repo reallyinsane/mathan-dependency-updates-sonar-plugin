@@ -33,6 +33,7 @@ public class Dependency {
   private String classifier;
   private String type;
   private String next;
+  private String last;
   private Availability availability;
 
   private List<String> incrementals = new ArrayList<>();
@@ -102,6 +103,10 @@ public class Dependency {
     return next;
   }
 
+  public String getLast() {
+    return last;
+  }
+
   public String getScope() {
     return scope;
   }
@@ -132,6 +137,10 @@ public class Dependency {
 
   public void setNext(String next) {
     this.next = next;
+  }
+
+  public void setLast(String last) {
+    this.last = last;
   }
 
   public void setScope(@Nullable String scope) {

@@ -18,31 +18,38 @@
 
 package io.mathan.sonar.dependencyupdates.parser;
 
+import io.mathan.sonar.dependencyupdates.Constants;
 import io.mathan.sonar.dependencyupdates.Utils;
 import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
 import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import javax.xml.stream.XMLStreamException;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.staxmate.SMInputFactory;
 import org.codehaus.staxmate.in.SMHierarchicCursor;
 import org.codehaus.staxmate.in.SMInputCursor;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.utils.log.Logger;
 import org.sonar.api.utils.log.Loggers;
 
 public class ReportParser {
 
   private static final Logger LOGGER = Loggers.get(ReportParser.class);
+  private final Configuration configuration;
+  private final Pattern versionExclusionPattern;
 
-  private ReportParser() {
+  public ReportParser(Configuration configuration) {
+    this.configuration = configuration;
+    this.versionExclusionPattern = Pattern.compile(configuration.get(Constants.CONFIG_VERSION_EXCLUSION_REGEX).orElse(Constants.CONFIG_VERSION_EXCLUSION_REGEX_DEFAULT));
   }
 
   /**
    * Creates an Analysis based on one or more dependency-update-reports.
    */
-  public static Analysis parse(List<XmlReportFile> files) throws IOException, XMLStreamException {
+  public Analysis parse(List<XmlReportFile> files) throws IOException, XMLStreamException {
     Analysis analysis = new Analysis();
     for (XmlReportFile file : files) {
       parse(analysis, file);
@@ -50,7 +57,7 @@ public class ReportParser {
     return analysis;
   }
 
-  private static void parse(Analysis analysis, XmlReportFile file) throws IOException, XMLStreamException {
+  private void parse(Analysis analysis, XmlReportFile file) throws IOException, XMLStreamException {
     SMInputFactory inputFactory = Utils.newStaxParser();
     SMHierarchicCursor rootC = inputFactory.rootElementCursor(file.getInputStream());
     rootC.advance(); // <DependencyUpdatesReport>
@@ -67,7 +74,7 @@ public class ReportParser {
   }
 
 
-  private static void processDependencies(List<Dependency> list, SMInputCursor parent, String childName) throws XMLStreamException {
+  private void processDependencies(List<Dependency> list, SMInputCursor parent, String childName) throws XMLStreamException {
     SMInputCursor childCursor = parent.childCursor();
     while (childCursor.getNext() != null) {
       String nodeName = childCursor.getLocalName();
@@ -77,7 +84,7 @@ public class ReportParser {
     }
   }
 
-  private static Dependency processDependency(SMInputCursor cursor) throws XMLStreamException {
+  private Dependency processDependency(SMInputCursor cursor) throws XMLStreamException {
     Dependency dependency = new Dependency();
     SMInputCursor childCursor = cursor.childCursor();
     while (childCursor.getNext() != null) {
@@ -105,8 +112,32 @@ public class ReportParser {
       } else if ("status".equals(nodeName)) {
         dependency.setAvailability(Availability.fromString(StringUtils.trim(childCursor.collectDescendantText(true))));
       }
-
     }
+    if (dependency.getNext() != null && versionExclusionPattern.matcher(dependency.getNext()).matches()) {
+      if (dependency.getIncrementals().size() > 0) {
+        dependency.setNext(dependency.getIncrementals().get(0));
+        dependency.setAvailability(Availability.Incremental);
+      } else if (dependency.getMinors().size() > 0) {
+        dependency.setNext(dependency.getMinors().get(0));
+        dependency.setAvailability(Availability.Minor);
+      } else if (dependency.getMajors().size() > 0) {
+        dependency.setNext(dependency.getMajors().get(0));
+        dependency.setAvailability(Availability.Major);
+      } else {
+        dependency.setNext(null);
+        dependency.setAvailability(Availability.None);
+      }
+    }
+    if (dependency.getMajors().size() > 0) {
+      dependency.setLast(dependency.getMajors().get(dependency.getMajors().size() - 1));
+    } else if (dependency.getMinors().size() > 0) {
+      dependency.setLast(dependency.getMinors().get(dependency.getMinors().size() - 1));
+    } else if (dependency.getIncrementals().size() > 0) {
+      dependency.setLast(dependency.getIncrementals().get(dependency.getIncrementals().size() - 1));
+    } else {
+      dependency.setLast(dependency.getVersion());
+    }
+
     return dependency;
   }
 
@@ -117,12 +148,15 @@ public class ReportParser {
     return value;
   }
 
-  private static void processVersions(List<String> versions, SMInputCursor cursor, String childName) throws XMLStreamException {
+  private void processVersions(List<String> versions, SMInputCursor cursor, String childName) throws XMLStreamException {
     SMInputCursor childCursor = cursor.childCursor();
     while (childCursor.getNext() != null) {
       String nodeName = childCursor.getLocalName();
       if (childName.equals(nodeName)) {
-        versions.add(StringUtils.trim(childCursor.collectDescendantText(true)));
+        String version = StringUtils.trim(childCursor.collectDescendantText(true));
+        if (!versionExclusionPattern.matcher(version).matches()) {
+          versions.add(version);
+        }
       }
     }
   }

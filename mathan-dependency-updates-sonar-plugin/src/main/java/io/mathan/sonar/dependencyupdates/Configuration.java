@@ -116,6 +116,14 @@ public class Configuration {
             .description("Whitelist of dependencies whose issue severity will be overridden with BLOCKER. The filter syntax is"
                 + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_VERSION_EXCLUSION_REGEX)
+            .subCategory(Constants.SUB_CATEGORY_GENERAL)
+            .name("Version exlcude regex")
+            .description("Regex to exclude version identifiers. This can be done in configuration of versions-maven-plugin or here."
+                + " With the default filter version identifiers relating to alpha, beta, release candidate or milestone version"
+                + " will be ignored.")
+            .defaultValue(Constants.CONFIG_VERSION_EXCLUSION_REGEX_DEFAULT)
             .build()
     );
   }

@@ -67,8 +67,8 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
       default:
         throw new IllegalArgumentException("Unknown availability " + dependency.getAvailability());
     }
-    sb.append(String.format("available for dependency %s:%s:%s%s. Next version is %s.", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(),
-        dependencyManagement ? " (see dependency management)" : "", dependency.getNext()));
+    sb.append(String.format("available for dependency %s:%s:%s%s. Next version is %s. Latest version is %s.", dependency.getGroupId(), dependency.getArtifactId(), dependency.getVersion(),
+        dependencyManagement ? " (see dependency management)" : "", dependency.getNext(), dependency.getLast()));
     return sb.toString().trim();
   }
 
@@ -95,7 +95,7 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
 
   private Analysis parseAnalysis(SensorContext context) throws IOException, XMLStreamException {
     XmlReportFile report = XmlReportFileImpl.getReport(context.config(), fileSystem, this.pathResolver);
-    return ReportParser.parse(Arrays.asList(report));
+    return new ReportParser(context.config()).parse(Arrays.asList(report));
   }
 
   @Override

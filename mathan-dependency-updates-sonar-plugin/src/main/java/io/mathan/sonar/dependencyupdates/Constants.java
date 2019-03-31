@@ -41,12 +41,17 @@ public final class Constants {
   static final String CONFIG_OVERRIDE_CRITICAL = "sonar.dependencyUpdates.override.critical";
   static final String CONFIG_OVERRIDE_BLOCKER = "sonar.dependencyUpdates.override.blocker";
 
+  public static final String CONFIG_VERSION_EXCLUSION_REGEX = "sonar.dependencyUpdates.versionExclusionRegex";
+  public static final String CONFIG_VERSION_EXCLUSION_REGEX_DEFAULT = ".*[-_\\.](alpha|Alpha|ALPHA|beta|Beta|BETA|b|rc|RC|milestone|M|EA)[-_\\.]?[0-9]*";
+
+
   public static final String REPOSITORY_KEY = "DependencyUpdates";
   public static final String LANGUAGE_KEY = "mathan";
   public static final String RULE_KEY = "UsingDependencyWithAvailableUpdates";
   static final String SUB_CATEGORY_UPDATES = "Updates";
   static final String SUB_CATEGORY_INCLUSIONS_EXCLUSIONS = "Inclusions/Exclusions";
   static final String SUB_CATEGORY_OVERRIDES = "Overrides";
+  static final String SUB_CATEGORY_GENERAL = "General";
 
   private Constants() {
   }
