@@ -23,7 +23,11 @@ import io.mathan.sonar.dependencyupdates.Utils;
 import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
 import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import javax.xml.stream.XMLStreamException;
@@ -104,11 +108,11 @@ public class ReportParser {
       } else if ("nextVersion".equals(nodeName)) {
         dependency.setNext(StringUtils.trim(childCursor.collectDescendantText(true)));
       } else if ("incrementals".equals(nodeName)) {
-        processVersions(dependency.getIncrementals(), childCursor, "incremental");
+        dependency.getIncrementals().addAll(processVersions("(.*)", childCursor, "incremental"));
       } else if ("minors".equals(nodeName)) {
-        processVersions(dependency.getMinors(), childCursor, "minor");
+        dependency.getMinors().addAll(processVersions("^(\\d+\\.\\d+)", childCursor, "minor"));
       } else if ("majors".equals(nodeName)) {
-        processVersions(dependency.getMajors(), childCursor, "major");
+        dependency.getMajors().addAll(processVersions("^(\\d+)", childCursor, "major"));
       } else if ("status".equals(nodeName)) {
         dependency.setAvailability(Availability.fromString(StringUtils.trim(childCursor.collectDescendantText(true))));
       }
@@ -148,16 +152,22 @@ public class ReportParser {
     return value;
   }
 
-  private void processVersions(List<String> versions, SMInputCursor cursor, String childName) throws XMLStreamException {
+  private Collection<String> processVersions(String regex, SMInputCursor cursor, String childName) throws XMLStreamException {
+    Map<String, String> versions = new HashMap<>();
     SMInputCursor childCursor = cursor.childCursor();
+    Pattern pattern = Pattern.compile(regex);
     while (childCursor.getNext() != null) {
       String nodeName = childCursor.getLocalName();
       if (childName.equals(nodeName)) {
         String version = StringUtils.trim(childCursor.collectDescendantText(true));
         if (!versionExclusionPattern.matcher(version).matches()) {
-          versions.add(version);
+          Matcher matcher = pattern.matcher(version);
+          if (matcher.find()) {
+            versions.put(matcher.group(1), version);
+          }
         }
       }
     }
+    return versions.values();
   }
 }

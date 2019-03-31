@@ -34,9 +34,10 @@ public class DependencyUpdatesMeasureComputer implements MeasureComputer {
         .setOutputMetrics(
             Metrics.KEY_PATCHES,
             Metrics.KEY_PATCHES_MISSED,
+            Metrics.KEY_PATCHES_RATING,
             Metrics.KEY_UPGRADES,
             Metrics.KEY_UPGRADES_MISSED,
-            Metrics.KEY_REFRESH_PERIOD)
+            Metrics.KEY_UPGRADES_RATING)
         .build();
   }
 
@@ -47,16 +48,17 @@ public class DependencyUpdatesMeasureComputer implements MeasureComputer {
       sumMeasure(context, Metrics.KEY_PATCHES_MISSED);
       sumMeasure(context, Metrics.KEY_UPGRADES);
       sumMeasure(context, Metrics.KEY_UPGRADES_MISSED);
-      maxMeasure(context);
+      maxMeasure(context, Metrics.KEY_PATCHES_RATING);
+      maxMeasure(context, Metrics.KEY_UPGRADES_RATING);
     }
   }
 
-  private void maxMeasure(MeasureComputerContext context) {
+  private void maxMeasure(MeasureComputerContext context, String metricKey) {
     int max = 0;
-    for (Measure m : context.getChildrenMeasures(Metrics.KEY_REFRESH_PERIOD)) {
+    for (Measure m : context.getChildrenMeasures(metricKey)) {
       max = Math.max(max, m.getIntValue());
     }
-    context.addMeasure(Metrics.KEY_REFRESH_PERIOD, max);
+    context.addMeasure(metricKey, max);
   }
 
   private void sumMeasure(MeasureComputerContext context, String metricKey) {

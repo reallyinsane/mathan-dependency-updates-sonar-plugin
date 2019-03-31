@@ -19,11 +19,17 @@ The [versions-maven-plugin] has the goal *dependency-updates-report* which creat
 
 The plugin keeps track of the following statistics:
 
+Metric | Description 
+-------|------------
+Dependencies to patch | The number of dependencies with patches available (incremental updates). 
+Dependencies to upgrade | The number of dependencies with upgrades available (minor and/or major updates).
+
 * Total number of dependencies with patches available (incremental updates)
 * Total number of dependencies with upgrades available (minor and major updates)
 * Total number of patches missed
 * Total number of upgrades missed
-* Rating of the refresh period
+* Rating of the patch maintenance
+* Rating of the upgrade maintenance
 
 #### Refresh period rating
 

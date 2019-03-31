@@ -38,10 +38,10 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
   public static final String KEY_PATCHES = "metrics.patches";
   public static final String KEY_PATCHES_MISSED = "metrics.patches.repeatedly";
+  public static final String KEY_PATCHES_RATING = "metrios.patches.rating";
   public static final String KEY_UPGRADES = "metrics.upgrades";
   public static final String KEY_UPGRADES_MISSED = "metrics.upgrades.repeatedly";
-
-  public static final String KEY_REFRESH_PERIOD = "metrics.version.distance";
+  public static final String KEY_UPGRADES_RATING = "metrios.upgrades.rating";
 
   static final Metric<Integer> PATCHES = new Metric.Builder(Metrics.KEY_PATCHES, "Dependencies to patch", ValueType.INT)
       .setDescription("Dependencies with patches to apply")
@@ -75,8 +75,17 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Integer> REFRESH_PERIOD = new Metric.Builder(Metrics.KEY_REFRESH_PERIOD, "Refresh period", ValueType.RATING)
-      .setDescription("Rating of the refresh period")
+  static final Metric<Integer> PATCHES_RATING = new Metric.Builder(Metrics.KEY_PATCHES_RATING, "Patch Maintenance", ValueType.RATING)
+      .setDescription("Rating of the maintenance of applying patches")
+      .setDirection(Metric.DIRECTION_BETTER)
+      .setQualitative(Boolean.TRUE)
+      .setDomain(Metrics.DOMAIN)
+      .setWorstValue(5.0)
+      .setBestValue(1.0)
+      .create();
+
+  static final Metric<Integer> UPGRADES_RATING = new Metric.Builder(Metrics.KEY_UPGRADES_RATING, "Upgrade Maintenance", ValueType.RATING)
+      .setDescription("Rating of the maintenance of applying upgrades")
       .setDirection(Metric.DIRECTION_BETTER)
       .setQualitative(Boolean.TRUE)
       .setDomain(Metrics.DOMAIN)
@@ -97,28 +106,21 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     calculatePatchesMissed(context, inputComponent, analysis);
     calculateUpgrades(context, inputComponent, analysis);
     calculateUpgradesMissed(context, inputComponent, analysis);
-    calculateVersionDistance(context, inputComponent, analysis);
+    calculateRatings(context, inputComponent, analysis);
   }
 
-  private static void calculateVersionDistance(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-    int rating;
-    int majors = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getMajors().size() > 0).count());
-    if (majors > 0) {
-      rating = calculateVersionDistanceRatingMajor(majors);
-    } else {
-      int minors = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getMinors().size() > 0).count());
-      if (minors > 0) {
-        rating = calculateVersionDistanceRatingMinor(minors);
-      } else {
-        int incrementals = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count());
-        rating = calculateVersionDistanceRatingIncremental(incrementals);
-      }
-    }
-    context.<Integer>newMeasure().forMetric(Metrics.REFRESH_PERIOD).on(inputComponent).withValue(
-        Math.toIntExact(rating)).save();
+  private static void calculateRatings(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+
+    int patches = Double.valueOf(analysis.all().stream().mapToInt(Dependency::getUpdates).average().orElse(0)).intValue();
+    int upgrades = Double.valueOf(analysis.all().stream().mapToInt(Dependency::getUpgrades).average().orElse(0)).intValue();
+
+    context.<Integer>newMeasure().forMetric(Metrics.PATCHES_RATING).on(inputComponent).withValue(
+        Math.toIntExact(calculatePatchRating(patches))).save();
+    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_RATING).on(inputComponent).withValue(
+        Math.toIntExact(calculateUpgradeRating(upgrades))).save();
   }
 
-  private static int calculateVersionDistanceRatingIncremental(int count) {
+  private static int calculatePatchRating(int count) {
     switch (count) {
       case 0:
       case 1:
@@ -138,7 +140,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     }
   }
 
-  private static int calculateVersionDistanceRatingMinor(int count) {
+  private static int calculateUpgradeRating(int count) {
     switch (count) {
       case 0:
         return 1; // A
@@ -151,19 +153,6 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       case 5:
       case 6:
         return 4; // D
-      default:
-        return 5; // E
-    }
-  }
-
-  private static int calculateVersionDistanceRatingMajor(int count) {
-    switch (count) {
-      case 0:
-        return 1; // A
-      case 1:
-        return 2; // C
-      case 2:
-        return 3; // D
       default:
         return 5; // E
     }
@@ -202,9 +191,10 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     return Arrays.asList(
         Metrics.PATCHES,
         Metrics.PATCHES_MISSED,
+        Metrics.PATCHES_RATING,
         Metrics.UPGRADES,
         Metrics.UPGRADES_REPEATEDLY,
-        Metrics.REFRESH_PERIOD
+        Metrics.UPGRADES_RATING
     );
   }
 
