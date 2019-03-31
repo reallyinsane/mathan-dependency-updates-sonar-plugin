@@ -22,26 +22,27 @@ The plugin keeps track of the following statistics:
 Metric | Description 
 -------|------------
 Dependencies to patch | The number of dependencies with patches available (incremental updates). 
+Dependencies to patch (Ratio) | The ratio of dependencies to patch. 
 Dependencies to upgrade | The number of dependencies with upgrades available (minor and/or major updates).
+Dependencies to upgrade (Ratio) | The ratio of dependencies to upgrade.
+Patch maintenance | The rating of the patch maintenance (see below)
+Patches missed | The total number of patches missed. 
+Upgrade maintenance | The rating of the upgrade maintenance (see below)
+Upgrades missed | The total number of upgrades missed. 
 
-* Total number of dependencies with patches available (incremental updates)
-* Total number of dependencies with upgrades available (minor and major updates)
-* Total number of patches missed
-* Total number of upgrades missed
-* Rating of the patch maintenance
-* Rating of the upgrade maintenance
+#### Maintenance rating
 
-#### Refresh period rating
+The number of dependencies of patches/upgrades cannot be used for rating as this should also depend on the ratio to the total number of dependencies and the total number of patches/upgrades per dependency.
 
-In contrast to the other four metrics the refresh period is a rating of the project and its modules. The rating is based on the number of dependencies with incremental, minor or major updates available.
+This metric is not final. For now the rating is based on the regarding ratio. 
 
-Rating      | Incremental | Minor | Major
-------------|-------------|-------|------
-![a](a.png) | 0-2         | 0     | 0 
-![b](b.png) | 3-4         | 1-2   | -
-![c](c.png) | 5-6         | 3-4   | 1  
-![d](d.png) | 7-8         | 5-6   | 2
-![e](e.png) | 9-          | 7-    | 3-
+Ratio | Rating 
+------|-----------
+\<  5% |![a](a.png) 
+\< 10% |![b](b.png)
+\< 20% |![c](c.png)  
+\< 50% |![d](d.png)
+\>=50% |![e](e.png)
 
 ## Installation
 

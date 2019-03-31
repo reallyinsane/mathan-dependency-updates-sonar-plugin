@@ -36,15 +36,34 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
   private static final String DOMAIN = "Dependency Updates";
 
+  public static final String KEY_DEPENDENCIES = "metrics.dependencies";
   public static final String KEY_PATCHES = "metrics.patches";
+  public static final String KEY_PATCHES_RATIO = "metrics.patches.ratio";
   public static final String KEY_PATCHES_MISSED = "metrics.patches.repeatedly";
   public static final String KEY_PATCHES_RATING = "metrios.patches.rating";
   public static final String KEY_UPGRADES = "metrics.upgrades";
+  public static final String KEY_UPGRADES_RATIO = "metrics.upgrades.ratio";
   public static final String KEY_UPGRADES_MISSED = "metrics.upgrades.repeatedly";
   public static final String KEY_UPGRADES_RATING = "metrios.upgrades.rating";
 
+  static final Metric<Integer> DEPENDENCIES = new Metric.Builder(Metrics.KEY_DEPENDENCIES, "Total dependencies", ValueType.INT)
+      .setDescription("Total number of dependencies")
+      .setDirection(Metric.DIRECTION_NONE)
+      .setQualitative(Boolean.FALSE)
+      .setDomain(Metrics.DOMAIN)
+      .setHidden(true)
+      .create();
+
   static final Metric<Integer> PATCHES = new Metric.Builder(Metrics.KEY_PATCHES, "Dependencies to patch", ValueType.INT)
       .setDescription("Dependencies with patches to apply")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(Boolean.TRUE)
+      .setDomain(Metrics.DOMAIN)
+      .setBestValue(0.0)
+      .create();
+
+  static final Metric<Double> PATCHES_RATIO = new Metric.Builder(Metrics.KEY_PATCHES_RATIO, "Dependencies to patch (Ratio)", ValueType.PERCENT)
+      .setDescription("Ratio of dependencies with patches")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
       .setDomain(Metrics.DOMAIN)
@@ -61,6 +80,14 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
   static final Metric<Integer> UPGRADES = new Metric.Builder(Metrics.KEY_UPGRADES, "Dependencies to upgrade", ValueType.INT)
       .setDescription("Dependencies with upgrades to apply")
+      .setDirection(Metric.DIRECTION_WORST)
+      .setQualitative(Boolean.TRUE)
+      .setDomain(Metrics.DOMAIN)
+      .setBestValue(0.0)
+      .create();
+
+  static final Metric<Double> UPGRADES_RATIO = new Metric.Builder(Metrics.KEY_UPGRADES_RATIO, "Dependencies to upgrade (Ratio)", ValueType.PERCENT)
+      .setDescription("Ratio of dependencies with upgrades")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
       .setDomain(Metrics.DOMAIN)
@@ -102,97 +129,83 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
 
   private static void calculateMetrics(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    calculateDependencies(context, inputComponent, analysis);
     calculatePatches(context, inputComponent, analysis);
+    calculatePatchesRatio(context, inputComponent, analysis);
     calculatePatchesMissed(context, inputComponent, analysis);
     calculateUpgrades(context, inputComponent, analysis);
+    calculateUpgradesRatio(context, inputComponent, analysis);
     calculateUpgradesMissed(context, inputComponent, analysis);
-    calculateRatings(context, inputComponent, analysis);
   }
 
-  private static void calculateRatings(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-
-    int patches = Double.valueOf(analysis.all().stream().mapToInt(Dependency::getUpdates).average().orElse(0)).intValue();
-    int upgrades = Double.valueOf(analysis.all().stream().mapToInt(Dependency::getUpgrades).average().orElse(0)).intValue();
-
-    context.<Integer>newMeasure().forMetric(Metrics.PATCHES_RATING).on(inputComponent).withValue(
-        Math.toIntExact(calculatePatchRating(patches))).save();
-    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_RATING).on(inputComponent).withValue(
-        Math.toIntExact(calculateUpgradeRating(upgrades))).save();
-  }
-
-  private static int calculatePatchRating(int count) {
-    switch (count) {
-      case 0:
-      case 1:
-      case 2:
-        return 1; // A
-      case 3:
-      case 4:
-        return 2; // B
-      case 5:
-      case 6:
-        return 3; // C
-      case 7:
-      case 8:
-        return 4; // D
-      default:
-        return 5; // E
-    }
-  }
-
-  private static int calculateUpgradeRating(int count) {
-    switch (count) {
-      case 0:
-        return 1; // A
-      case 1:
-      case 2:
-        return 2; // B
-      case 3:
-      case 4:
-        return 3; // C
-      case 5:
-      case 6:
-        return 4; // D
-      default:
-        return 5; // E
-    }
+  private static void calculateDependencies(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    context.<Integer>newMeasure().forMetric(Metrics.DEPENDENCIES).on(inputComponent).withValue(analysis.all().size()).save();
   }
 
   private static void calculatePatches(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-    long count = analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count();
-    LOGGER.info("calculatePatches=" + count);
-    context.<Integer>newMeasure().forMetric(Metrics.PATCHES).on(inputComponent).withValue(
-        Math.toIntExact(count)).save();
+    int count = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count());
+    context.<Integer>newMeasure().forMetric(Metrics.PATCHES).on(inputComponent).withValue(count).save();
+  }
 
+  private static void calculatePatchesRatio(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    double ratio = 0;
+    if (analysis.all().size() > 0) {
+      ratio = 100.0 * analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count() / analysis.all().size();
+    }
+    context.<Double>newMeasure().forMetric(Metrics.PATCHES_RATIO).on(inputComponent).withValue(ratio).save();
+    context.<Integer>newMeasure().forMetric(Metrics.PATCHES_RATING).on(inputComponent).withValue(
+        Math.toIntExact(calculateRatioRating(ratio))).save();
   }
 
   private static void calculatePatchesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-    long sum = analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpdates)).getSum();
-    LOGGER.info("calculatePatchesMissed=" + sum);
-    context.<Integer>newMeasure().forMetric(Metrics.PATCHES_MISSED).on(inputComponent).withValue(
-        Math.toIntExact(sum)).save();
+    int sum = Math.toIntExact(analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpdates)).getSum());
+    context.<Integer>newMeasure().forMetric(Metrics.PATCHES_MISSED).on(inputComponent).withValue(sum).save();
   }
 
   private static void calculateUpgrades(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-    long count = analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count();
-    LOGGER.info("calculateUpgrades=" + count);
-    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES).on(inputComponent).withValue(Math.toIntExact(count)).save();
+    int count = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count());
+    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES).on(inputComponent).withValue(count).save();
+  }
+
+  private static void calculateUpgradesRatio(SensorContext context, InputComponent inputComponent, Analysis analysis) {
+    double ratio = 0;
+    if (analysis.all().size() > 0) {
+      ratio = 100.0 * analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count() / analysis.all().size();
+    }
+    context.<Double>newMeasure().forMetric(Metrics.UPGRADES_RATIO).on(inputComponent).withValue(ratio).save();
+    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_RATING).on(inputComponent).withValue(
+        Math.toIntExact(calculateRatioRating(ratio))).save();
   }
 
   private static void calculateUpgradesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-    long sum = analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpgrades)).getSum();
-    LOGGER.info("calculateUpgradesMissed=" + sum);
-    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(inputComponent).withValue(
-        Math.toIntExact(sum)).save();
+    int sum = Math.toIntExact(analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpgrades)).getSum());
+    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(inputComponent).withValue(sum).save();
+  }
+
+  static int calculateRatioRating(double ratio) {
+    if (ratio < 5) {
+      return 1;
+    } else if (ratio < 10) {
+      return 2;
+    } else if (ratio < 20) {
+      return 3;
+    } else if (ratio < 50) {
+      return 4;
+    } else {
+      return 5;
+    }
   }
 
   @Override
   public List<Metric> getMetrics() {
     return Arrays.asList(
+        Metrics.DEPENDENCIES,
         Metrics.PATCHES,
+        Metrics.PATCHES_RATIO,
         Metrics.PATCHES_MISSED,
         Metrics.PATCHES_RATING,
         Metrics.UPGRADES,
+        Metrics.UPGRADES_RATIO,
         Metrics.UPGRADES_REPEATEDLY,
         Metrics.UPGRADES_RATING
     );

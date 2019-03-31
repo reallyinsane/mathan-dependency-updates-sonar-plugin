@@ -27,15 +27,26 @@ import org.sonar.api.ce.measure.MeasureComputer;
  */
 public class DependencyUpdatesMeasureComputer implements MeasureComputer {
 
+  private static int getSum(MeasureComputerContext context, String metricKey) {
+    int sum = 0;
+    for (Measure m : context.getChildrenMeasures(metricKey)) {
+      sum += m.getIntValue();
+    }
+    return sum;
+  }
+
   @Override
   public MeasureComputerDefinition define(MeasureComputerDefinitionContext defContext) {
     return defContext
         .newDefinitionBuilder()
         .setOutputMetrics(
+            Metrics.KEY_DEPENDENCIES,
             Metrics.KEY_PATCHES,
+            Metrics.KEY_PATCHES_RATIO,
             Metrics.KEY_PATCHES_MISSED,
             Metrics.KEY_PATCHES_RATING,
             Metrics.KEY_UPGRADES,
+            Metrics.KEY_UPGRADES_RATIO,
             Metrics.KEY_UPGRADES_MISSED,
             Metrics.KEY_UPGRADES_RATING)
         .build();
@@ -44,13 +55,26 @@ public class DependencyUpdatesMeasureComputer implements MeasureComputer {
   @Override
   public void compute(MeasureComputerContext context) {
     if (context.getComponent().getType() != Type.FILE) {
+      sumMeasure(context, Metrics.KEY_DEPENDENCIES);
       sumMeasure(context, Metrics.KEY_PATCHES);
       sumMeasure(context, Metrics.KEY_PATCHES_MISSED);
       sumMeasure(context, Metrics.KEY_UPGRADES);
       sumMeasure(context, Metrics.KEY_UPGRADES_MISSED);
-      maxMeasure(context, Metrics.KEY_PATCHES_RATING);
-      maxMeasure(context, Metrics.KEY_UPGRADES_RATING);
+      ratioRatingMeasure(context, Metrics.KEY_PATCHES_RATIO, Metrics.KEY_PATCHES_RATING, Metrics.KEY_PATCHES, Metrics.KEY_DEPENDENCIES);
+      ratioRatingMeasure(context, Metrics.KEY_UPGRADES_RATIO, Metrics.KEY_UPGRADES_RATING, Metrics.KEY_UPGRADES, Metrics.KEY_DEPENDENCIES);
     }
+  }
+
+  private void ratioRatingMeasure(MeasureComputerContext context, String ratioMetric, String ratingMetric, String countMetric, String totalMetric) {
+
+    double ratio = 0;
+    int count = getSum(context, countMetric);
+    int total = getSum(context, totalMetric);
+    if (total > 0) {
+      ratio = 100 * count / total;
+    }
+    context.addMeasure(ratioMetric, ratio);
+    context.addMeasure(ratingMetric, Metrics.calculateRatioRating(ratio));
   }
 
   private void maxMeasure(MeasureComputerContext context, String metricKey) {
@@ -62,10 +86,6 @@ public class DependencyUpdatesMeasureComputer implements MeasureComputer {
   }
 
   private void sumMeasure(MeasureComputerContext context, String metricKey) {
-    int sum = 0;
-    for (Measure m : context.getChildrenMeasures(metricKey)) {
-      sum += m.getIntValue();
-    }
-    context.addMeasure(metricKey, sum);
+    context.addMeasure(metricKey, getSum(context, metricKey));
   }
 }
