@@ -67,20 +67,72 @@ whose group id started with `org.apache.`, and `:::*-SNAPSHOT` would match all s
 
 ### Configuration properties
 
-Property | Description | Default
----------|-------------|--------
-sonar.dependencyUpdates.updateIncremental | Overrides the severity used for dependencies with incremental updates available. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER) | Severity.MINOR
-sonar.dependencyUpdates.updateMinor | Overrides the severity used for dependencies with minor updates available. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER) | Severity.MAJOR
-sonar.dependencyUpdates.updateMajor | Overrides the severity used for dependencies with major updates available. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER) | Severity.CRITICAL
-sonar.dependencyUpdates.inclusions | Filter (see Artifact pattern syntax) to include certain dependencies only. | `:::::` (include all)
-sonar.dependencyUpdates.exclusions | Filter (see Artifact pattern syntax) to exclude certain dependencies. | (none)
-sonar.dependencyUpdates.override.info | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to INFO | (none)
-sonar.dependencyUpdates.override.minor | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to MINOR | (none)
-sonar.dependencyUpdates.override.major | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to MAJOR | (none)
-sonar.dependencyUpdates.override.critical | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to CRITICAL | (none)
-sonar.dependencyUpdates.override.blocker | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to BLOCKER | (none)
-sonar.dependencyUpdates.versionExclusionRegex | Regex to exclude version identifiers. This can be done in configuration of versions-maven-plugin or here. With the default filter version identifiers relating to alpha, beta, release candidate or milestone version will be ignored. | `todo`
-sonar.dependencyUpdates.discreteMinorMajor | Flag indicating if only discrete minor and major versions should be used for metric calculation. If `true` available patches will be ignored when counting minor versions and patches and minor versions will be ignored when counting major versions. (For available minor versions 1.1.0, 1.1.1, 1.1.2, 1.2.0 in case of `true` the result would be 2 (1.1.2 and 1.2.0) and in case of `false` 4 (all available versions). | true
+This plugin offers various configuration options which are explained in the following categories.
+
+#### Default Severity
+
+For each kind of update for a dependency the default severity can be defined. This results in all issues for available updates of a kind to be created with this severity. All possible severities can
+be used as value. (INFO, MINOR, MAJOR, CRITICAL, BLOCKER)
+
+Property | Default
+---------|--------
+sonar.dependencyUpdates.updateIncremental | Severity.MINOR
+sonar.dependencyUpdates.updateMinor | Severity.MAJOR
+sonar.dependencyUpdates.updateMajor | Severity.CRITICAL
+
+#### Inclusions/ Exclusions
+
+By default updates for all dependencies are reported. A whitelist filter and/or a blacklist filter can be used to include/exclude certain dependencies. These filter use the artifact pattern syntax
+described above. Some common use cases for the filter are
+
+- exclude SNAPSHOT dependencies (`:::*-SNAPSHOT`)
+- exclude dependencies with scope test (`::::test`)
+- include dependencies of own company only (e.g `com.mycompany.*`)
+
+Property | Default
+---------|--------
+sonar.dependencyUpdates.inclusions | `:::::` (include all)
+sonar.dependencyUpdates.exclusions | (none)
+
+#### Overrides
+
+In addition to global inclusion/exclusion filter and the option to define the default severity for the kind of updates, overrides can be defined for all severities. Using such a whitelist filter
+will report updates found for matching dependencies with the regarding severity. Some common use cases for the filter is
+
+- increase severity for security related dependencies
+
+Property | Default
+---------|--------
+sonar.dependencyUpdates.override.info | (none)
+sonar.dependencyUpdates.override.minor | (none)
+sonar.dependencyUpdates.override.major | (none)
+sonar.dependencyUpdates.override.critical | (none)
+sonar.dependencyUpdates.override.blocker | (none)
+
+#### Versions
+
+[versions-maven-plugin] by default reports all versions available in the configured repositories. Especially some libraries are releasing non-standard alpha, beta, release candidate or milestone 
+versions. In general such libraries should not be reported by this plugin. Therefore the following configuration property is excluding these versions by default. It is also possible to configure this
+for the [versions-maven-plugin] but then it has to be done for each project or global to maven.
+
+Property | Default
+---------|--------
+sonar.dependencyUpdates.versionExclusionRegex | `.*\[-_\\.\]\(alpha\|Alpha\|ALPHA\|beta\|Beta\|BETA\|rc\|RC\|milestone\|M\|EA\)\[-_\\.\]?\[0-9\]*`
+
+The second configuration in the Versions category is related to the sub versions reported for minor and major updated. [versions-maven-plugin] will report available patches for minor updates as
+discrete versions as it will also report available minors for major updates. As if a minor or major update is done, usually the latest patch/minor update is taken respectively. So the following
+configuration will exclude additional patches available for minor updates and additional minors available for major updates. It is enabled by default. 
+
+Property | Default
+---------|--------
+sonar.dependencyUpdates.discreteMinorMajor | true
+
+Sample for a dependency with version 1.1.0
+
+Reported by [versions-maven-plugin] | Recognized (configuration is `false`) | Recognized (configuration is `true`)
+------------------------------------|---------------------------------------|-------------------------------------
+minor updates 1.2.0, 1.2.1, 1.2.2, 1.3.0 | 4 (1.2.0, 1.2.1, 1.2.2, 1.3.0) | 2 (1.2.2, 1.3.0)
+major updates 2.0.0, 2.1.0, 2.2.0, 3.0.0, 4.0.0 | 5 (2.0.0, 2.1.0, 2.2.0, 3.0.0, 4.0.0) | 3 (2.2.0, 3.0.0, 4.0.0)
 
 [dependency updates report]: https://www.mojohaus.org/versions-maven-plugin/dependency-updates-report-mojo.html
 [versions-maven-plugin]: https://github.com/mojohaus/versions-maven-plugin

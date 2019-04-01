@@ -50,10 +50,10 @@ public final class Constants {
   public static final String REPOSITORY_KEY = "DependencyUpdates";
   public static final String LANGUAGE_KEY = "mathan";
   public static final String RULE_KEY = "UsingDependencyWithAvailableUpdates";
-  static final String SUB_CATEGORY_UPDATES = "Updates";
+  static final String SUB_CATEGORY_DEFAULT_SEVERITIES = "Default Severities";
   static final String SUB_CATEGORY_INCLUSIONS_EXCLUSIONS = "Inclusions/Exclusions";
   static final String SUB_CATEGORY_OVERRIDES = "Overrides";
-  static final String SUB_CATEGORY_GENERAL = "General";
+  static final String SUB_CATEGORY_VERSIONS = "Versions";
 
   private Constants() {
   }

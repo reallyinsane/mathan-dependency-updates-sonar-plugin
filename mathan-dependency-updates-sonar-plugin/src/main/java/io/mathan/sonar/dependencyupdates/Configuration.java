@@ -41,7 +41,7 @@ public class Configuration {
             .defaultValue(Constants.CONFIG_REPORT_PATH_DEFAULT)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_UPDATE_INCREMENTAL)
-            .subCategory(Constants.SUB_CATEGORY_UPDATES)
+            .subCategory(Constants.SUB_CATEGORY_DEFAULT_SEVERITIES)
             .name("Incremental updates")
             .description("Severity used for available incremental updates")
             .options(Severity.ALL)
@@ -49,7 +49,7 @@ public class Configuration {
             .type(PropertyType.SINGLE_SELECT_LIST)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_UPDATE_MINOR)
-            .subCategory(Constants.SUB_CATEGORY_UPDATES)
+            .subCategory(Constants.SUB_CATEGORY_DEFAULT_SEVERITIES)
             .name("Minor updates")
             .description("Severity used for available minor updates")
             .options(Severity.ALL)
@@ -57,7 +57,7 @@ public class Configuration {
             .type(PropertyType.SINGLE_SELECT_LIST)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_UPDATE_MAJOR)
-            .subCategory(Constants.SUB_CATEGORY_UPDATES)
+            .subCategory(Constants.SUB_CATEGORY_DEFAULT_SEVERITIES)
             .name("Major updates")
             .description("Severity used for available major updates")
             .options(Severity.ALL)
@@ -118,7 +118,7 @@ public class Configuration {
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_VERSION_EXCLUSION_REGEX)
-            .subCategory(Constants.SUB_CATEGORY_GENERAL)
+            .subCategory(Constants.SUB_CATEGORY_VERSIONS)
             .name("Version exlcude regex")
             .description("Regex to exclude version identifiers. This can be done in configuration of versions-maven-plugin or here."
                 + " With the default filter version identifiers relating to alpha, beta, release candidate or milestone version"
@@ -126,7 +126,7 @@ public class Configuration {
             .defaultValue(Constants.CONFIG_VERSION_EXCLUSION_REGEX_DEFAULT)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_DISCRETE_MINOR_MAJOR)
-            .subCategory(Constants.SUB_CATEGORY_GENERAL)
+            .subCategory(Constants.SUB_CATEGORY_VERSIONS)
             .name("Discrete minor and major versions only")
             .description("Flag indicating if only discrete minor and major versions should be used for metric calculation. If 'true'"
                 + " available patches will be ignored when counting minor versions and patches and minor versions will be ignored"
