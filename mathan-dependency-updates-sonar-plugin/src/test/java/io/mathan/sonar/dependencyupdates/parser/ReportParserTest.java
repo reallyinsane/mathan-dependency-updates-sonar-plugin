@@ -46,10 +46,10 @@ public class ReportParserTest {
     Assert.assertEquals(4, dependencyManagements.size());
     verifyPresent(
         dependencyManagements, "dependencymanagement-with-minor", null, null, "jar", "4.0.0", "4.1.0",
-        Collections.emptyList(), Arrays.asList("4.1.0", "4.1.1", "4.1.2"), Collections.emptyList(), Availability.Minor);
+        Collections.emptyList(), Arrays.asList("4.1.2"), Collections.emptyList(), Availability.Minor);
     verifyPresent(
         dependencyManagements, "dependencymanagement-with-major", null, null, "pom", "1.4.0", "2.0.0",
-        Collections.emptyList(), Collections.emptyList(), Arrays.asList("2.0.0", "2.1.0"), Availability.Major);
+        Collections.emptyList(), Collections.emptyList(), Arrays.asList("2.1.0"), Availability.Major);
     verifyPresent(
         dependencyManagements, "dependencymanagement-with-incremental", null, null, "pom", "4.2.2", "4.2.3",
         Arrays.asList("4.2.3"), Collections.emptyList(), Collections.emptyList(), Availability.Incremental);
@@ -61,10 +61,10 @@ public class ReportParserTest {
     Assert.assertEquals(4, dependencies.size());
     verifyPresent(
         dependencies, "dependency-with-minor", null, null, "pom", "4.0.0", "4.1.0",
-        Collections.emptyList(), Arrays.asList("4.1.0", "4.1.1", "4.1.2"), Collections.emptyList(), Availability.Minor);
+        Collections.emptyList(), Arrays.asList("4.1.2"), Collections.emptyList(), Availability.Minor);
     verifyPresent(
         dependencies, "dependency-with-major", null, null, "pom", "1.4.0", "2.0.0",
-        Collections.emptyList(), Collections.emptyList(), Arrays.asList("2.0.0", "2.1.0"), Availability.Major);
+        Collections.emptyList(), Collections.emptyList(), Arrays.asList("2.1.0"), Availability.Major);
     verifyPresent(
         dependencies, "dependency-with-incremental", "test", null, "pom", "4.2.2", "4.2.3",
         Arrays.asList("4.2.3"), Collections.emptyList(), Collections.emptyList(), Availability.Incremental);
