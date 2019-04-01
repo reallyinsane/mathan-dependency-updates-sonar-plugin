@@ -79,6 +79,8 @@ sonar.dependencyUpdates.override.minor | Filter (see Artifact pattern syntax) to
 sonar.dependencyUpdates.override.major | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to MAJOR | (none)
 sonar.dependencyUpdates.override.critical | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to CRITICAL | (none)
 sonar.dependencyUpdates.override.blocker | Filter (see Artifact pattern syntax) to override severtiy (if updates are available for dependencies matching) to BLOCKER | (none)
+sonar.dependencyUpdates.versionExclusionRegex | Regex to exclude version identifiers. This can be done in configuration of versions-maven-plugin or here. With the default filter version identifiers relating to alpha, beta, release candidate or milestone version will be ignored. | `todo`
+sonar.dependencyUpdates.discreteMinorMajor | Flag indicating if only discrete minor and major versions should be used for metric calculation. If `true` available patches will be ignored when counting minor versions and patches and minor versions will be ignored when counting major versions. (For available minor versions 1.1.0, 1.1.1, 1.1.2, 1.2.0 in case of `true` the result would be 2 (1.1.2 and 1.2.0) and in case of `false` 4 (all available versions). | true
 
 [dependency updates report]: https://www.mojohaus.org/versions-maven-plugin/dependency-updates-report-mojo.html
 [versions-maven-plugin]: https://github.com/mojohaus/versions-maven-plugin

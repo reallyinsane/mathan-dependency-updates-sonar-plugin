@@ -124,6 +124,16 @@ public class Configuration {
                 + " With the default filter version identifiers relating to alpha, beta, release candidate or milestone version"
                 + " will be ignored.")
             .defaultValue(Constants.CONFIG_VERSION_EXCLUSION_REGEX_DEFAULT)
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_DISCRETE_MINOR_MAJOR)
+            .subCategory(Constants.SUB_CATEGORY_GENERAL)
+            .name("Discrete minor and major versions only")
+            .description("Flag indicating if only discrete minor and major versions should be used for metric calculation. If 'true'"
+                + " available patches will be ignored when counting minor versions and patches and minor versions will be ignored"
+                + " when counting major versions. (For available minor versions 1.1.0, 1.1.1, 1.1.2, 1.2.0 in case of 'true' the"
+                + " result would be 2 (1.1.2 and 1.2.0) and in case of 'false' 4 (all available versions).")
+            .type(PropertyType.BOOLEAN)
+            .defaultValue("true")
             .build()
     );
   }

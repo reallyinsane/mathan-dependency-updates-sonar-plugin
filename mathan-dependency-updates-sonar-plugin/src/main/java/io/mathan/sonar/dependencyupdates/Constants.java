@@ -43,6 +43,8 @@ public final class Constants {
 
   public static final String CONFIG_VERSION_EXCLUSION_REGEX = "sonar.dependencyUpdates.versionExclusionRegex";
   public static final String CONFIG_VERSION_EXCLUSION_REGEX_DEFAULT = ".*[-_\\.](alpha|Alpha|ALPHA|beta|Beta|BETA|b|rc|RC|milestone|M|EA)[-_\\.]?[0-9]*";
+  public static final String CONFIG_DISCRETE_MINOR_MAJOR = "sonar.dependencyUpdates.discreteMinorMajor";
+  public static final Boolean CONFIG_DISCRETE_MINOR_MAJOR_DEFAULT = true;
 
 
   public static final String REPOSITORY_KEY = "DependencyUpdates";

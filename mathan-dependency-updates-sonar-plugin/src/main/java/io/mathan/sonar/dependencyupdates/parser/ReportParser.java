@@ -44,10 +44,21 @@ public class ReportParser {
   private static final Logger LOGGER = Loggers.get(ReportParser.class);
   private final Configuration configuration;
   private final Pattern versionExclusionPattern;
+  private final Pattern incrementalVersionsPattern = Pattern.compile("(.*)");
+  private final Pattern minorVersionsPattern;
+  private final Pattern majorVersionsPattern;
 
   public ReportParser(Configuration configuration) {
     this.configuration = configuration;
     this.versionExclusionPattern = Pattern.compile(configuration.get(Constants.CONFIG_VERSION_EXCLUSION_REGEX).orElse(Constants.CONFIG_VERSION_EXCLUSION_REGEX_DEFAULT));
+    boolean discreteMinorMajor = configuration.getBoolean(Constants.CONFIG_DISCRETE_MINOR_MAJOR).orElse(Constants.CONFIG_DISCRETE_MINOR_MAJOR_DEFAULT);
+    if (discreteMinorMajor) {
+      minorVersionsPattern = Pattern.compile("^(\\d+\\.\\d+)");
+      majorVersionsPattern = Pattern.compile("^(\\d+)");
+    } else {
+      minorVersionsPattern = Pattern.compile("(.*)");
+      majorVersionsPattern = Pattern.compile("(.*)");
+    }
   }
 
   /**
@@ -108,11 +119,11 @@ public class ReportParser {
       } else if ("nextVersion".equals(nodeName)) {
         dependency.setNext(StringUtils.trim(childCursor.collectDescendantText(true)));
       } else if ("incrementals".equals(nodeName)) {
-        dependency.getIncrementals().addAll(processVersions("(.*)", childCursor, "incremental"));
+        dependency.getIncrementals().addAll(processVersions(incrementalVersionsPattern, childCursor, "incremental"));
       } else if ("minors".equals(nodeName)) {
-        dependency.getMinors().addAll(processVersions("^(\\d+\\.\\d+)", childCursor, "minor"));
+        dependency.getMinors().addAll(processVersions(minorVersionsPattern, childCursor, "minor"));
       } else if ("majors".equals(nodeName)) {
-        dependency.getMajors().addAll(processVersions("^(\\d+)", childCursor, "major"));
+        dependency.getMajors().addAll(processVersions(majorVersionsPattern, childCursor, "major"));
       } else if ("status".equals(nodeName)) {
         dependency.setAvailability(Availability.fromString(StringUtils.trim(childCursor.collectDescendantText(true))));
       }
@@ -152,10 +163,9 @@ public class ReportParser {
     return value;
   }
 
-  private Collection<String> processVersions(String regex, SMInputCursor cursor, String childName) throws XMLStreamException {
+  private Collection<String> processVersions(Pattern pattern, SMInputCursor cursor, String childName) throws XMLStreamException {
     Map<String, String> versions = new HashMap<>();
     SMInputCursor childCursor = cursor.childCursor();
-    Pattern pattern = Pattern.compile(regex);
     while (childCursor.getNext() != null) {
       String nodeName = childCursor.getLocalName();
       if (childName.equals(nodeName)) {
