@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.mathan.sonar</groupId>
     <artifactId>mathan-dependency-updates-sonar-plugin-reactor</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>7.6.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>mathan-dependency-updates-sonar-plugin</artifactId>
