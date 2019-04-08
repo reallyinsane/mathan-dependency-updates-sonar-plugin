@@ -36,13 +36,9 @@ The number of dependencies of patches/upgrades cannot be used for rating as this
 
 This metric is not final. For now the rating is based on the regarding ratio. 
 
-Ratio | Rating 
-------|-----------
-\<  5% |![a](a.png) 
-\< 10% |![b](b.png)
-\< 20% |![c](c.png)  
-\< 50% |![d](d.png)
-\>=50% |![e](e.png)
+Rating | ![a](a1.png) | ![b](b.png) | ![c](c.png) | ![d](d.png) | ![e](e.png)   
+------|--------------|-------------|-------------|-------------|------------
+Ratio | \<  5%       |      \< 10% |      \< 20% |      \< 50% | \>=50%
 
 ## Installation
 
