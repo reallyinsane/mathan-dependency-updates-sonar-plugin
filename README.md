@@ -32,13 +32,19 @@ Upgrades missed | The total number of upgrades missed.
 
 #### Maintenance rating
 
-The number of dependencies of patches/upgrades cannot be used for rating as this should also depend on the ratio to the total number of dependencies and the total number of patches/upgrades per dependency.
+The maintenance rating is based on the ratio of dependencies with patches/upgrades and the total number of dependencies. The ratios of \<=5%, \<=10%, \<=20%, \<=50% and >50% are the guidelines to
+define the rating. There are slightly adoptions for projects with less than 50 dependencies.
 
-This metric is not final. For now the rating is based on the regarding ratio. 
 
-Rating | ![a](a1.png) | ![b](b.png) | ![c](c.png) | ![d](d.png) | ![e](e.png)   
-------|--------------|-------------|-------------|-------------|------------
-Ratio | \<  5%       |      \< 10% |      \< 20% |      \< 50% | \>=50%
+This metric is not final. For now the rating is calculated the following way. 
+
+Ratings              | ![a](a.png) | ![b](b.png) | ![c](c.png) | ![d](d.png) | ![e](e.png)   
+---------------------|-------------|-------------|-------------|-------------|------------
+Ratio                | \<=~5%      |  \<=~10%    | \<=~20%     | \<=~50%     | \>50%
+ 0 - 10 dependencies | 0           |  1          |  2          |  3-5        | \>5
+11 - 20 dependencies | 0-1         |  2-3        |  4-5        |  6-10       | \>10
+21 - 50 dependencies | 0-2         |  3-5        |  6-10       |  11-25      | \>25
+50 -    dependencies | 0-5         |  6-10       |  11-20      |  21-50      | \>50
 
 ## Installation
 

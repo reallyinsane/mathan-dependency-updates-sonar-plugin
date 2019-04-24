@@ -21,8 +21,11 @@ package io.mathan.sonar.dependencyupdates;
 import io.mathan.sonar.dependencyupdates.parser.Analysis;
 import io.mathan.sonar.dependencyupdates.parser.Dependency;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import org.apache.commons.lang3.Range;
 import org.sonar.api.batch.fs.InputComponent;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.measures.Metric;
@@ -45,6 +48,49 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
   public static final String KEY_UPGRADES_RATIO = "metrics.upgrades.ratio";
   public static final String KEY_UPGRADES_MISSED = "metrics.upgrades.repeatedly";
   public static final String KEY_UPGRADES_RATING = "metrios.upgrades.rating";
+
+  private static final int RATING_A = 1;
+  private static final int RATING_B = 2;
+  private static final int RATING_C = 3;
+  private static final int RATING_D = 4;
+  private static final int RATING_E = 5;
+
+  private static Map<Range<Integer>, Map<Range<Integer>, Integer>> mapping = new HashMap<>();
+
+  static {
+    Range<Integer> range = Range.between(0, 10);
+    Map<Range<Integer>, Integer> ratings = new HashMap<>();
+    ratings.put(Range.between(0, 0), RATING_A);
+    ratings.put(Range.between(1, 1), RATING_B);
+    ratings.put(Range.between(2, 2), RATING_C);
+    ratings.put(Range.between(3, 5), RATING_D);
+    ratings.put(Range.between(6, 10), RATING_E);
+    mapping.put(range, ratings);
+    range = Range.between(11, 20);
+    ratings = new HashMap<>();
+    ratings.put(Range.between(0, 1), RATING_A);
+    ratings.put(Range.between(2, 3), RATING_B);
+    ratings.put(Range.between(4, 5), RATING_C);
+    ratings.put(Range.between(6, 10), RATING_D);
+    ratings.put(Range.between(11, 20), RATING_E);
+    mapping.put(range, ratings);
+    range = Range.between(21, 50);
+    ratings = new HashMap<>();
+    ratings.put(Range.between(0, 2), RATING_A);
+    ratings.put(Range.between(3, 5), RATING_B);
+    ratings.put(Range.between(6, 10), RATING_C);
+    ratings.put(Range.between(11, 25), RATING_D);
+    ratings.put(Range.between(26, 50), RATING_E);
+    mapping.put(range, ratings);
+    range = Range.between(51, Integer.MAX_VALUE);
+    ratings = new HashMap<>();
+    ratings.put(Range.between(0, 5), RATING_A);
+    ratings.put(Range.between(6, 10), RATING_B);
+    ratings.put(Range.between(11, 20), RATING_C);
+    ratings.put(Range.between(21, 50), RATING_D);
+    ratings.put(Range.between(51, Integer.MAX_VALUE), RATING_E);
+  }
+
 
   static final Metric<Integer> DEPENDENCIES = new Metric.Builder(Metrics.KEY_DEPENDENCIES, "Total dependencies", ValueType.INT)
       .setDescription("Total number of dependencies")
@@ -149,12 +195,13 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
   private static void calculatePatchesRatio(SensorContext context, InputComponent inputComponent, Analysis analysis) {
     double ratio = 0;
+    long totalDependenciesWithPatches = analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count();
     if (analysis.all().size() > 0) {
-      ratio = 100.0 * analysis.all().stream().filter(dependency -> dependency.getIncrementals().size() > 0).count() / analysis.all().size();
+      ratio = 100.0 * totalDependenciesWithPatches / analysis.all().size();
     }
     context.<Double>newMeasure().forMetric(Metrics.PATCHES_RATIO).on(inputComponent).withValue(ratio).save();
     context.<Integer>newMeasure().forMetric(Metrics.PATCHES_RATING).on(inputComponent).withValue(
-        Math.toIntExact(calculateRatioRating(ratio))).save();
+        Math.toIntExact(calculateRating(ratio, Math.toIntExact(totalDependenciesWithPatches)))).save();
   }
 
   private static void calculatePatchesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
@@ -169,12 +216,13 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
   private static void calculateUpgradesRatio(SensorContext context, InputComponent inputComponent, Analysis analysis) {
     double ratio = 0;
+    long totalDependenciesWithUpgrades = analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count();
     if (analysis.all().size() > 0) {
-      ratio = 100.0 * analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count() / analysis.all().size();
+      ratio = 100.0 * totalDependenciesWithUpgrades / analysis.all().size();
     }
     context.<Double>newMeasure().forMetric(Metrics.UPGRADES_RATIO).on(inputComponent).withValue(ratio).save();
     context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_RATING).on(inputComponent).withValue(
-        Math.toIntExact(calculateRatioRating(ratio))).save();
+        Math.toIntExact(calculateRating(ratio, Math.toIntExact(totalDependenciesWithUpgrades)))).save();
   }
 
   private static void calculateUpgradesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
@@ -182,18 +230,10 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(inputComponent).withValue(sum).save();
   }
 
-  static int calculateRatioRating(double ratio) {
-    if (ratio < 5) {
-      return 1;
-    } else if (ratio < 10) {
-      return 2;
-    } else if (ratio < 20) {
-      return 3;
-    } else if (ratio < 50) {
-      return 4;
-    } else {
-      return 5;
-    }
+  static int calculateRating(double ratio, int total) {
+    Range range = mapping.keySet().stream().filter(r -> r.contains(total)).findFirst().get();
+    Map<Range<Integer>, Integer> ratings = mapping.get(range);
+    return ratings.get(ratings.keySet().stream().filter(r -> r.contains(total)).findFirst().get());
   }
 
   @Override
