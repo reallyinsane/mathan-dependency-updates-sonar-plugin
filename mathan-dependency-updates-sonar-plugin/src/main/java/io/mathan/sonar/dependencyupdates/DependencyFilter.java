@@ -130,7 +130,7 @@ public class DependencyFilter {
    * @return The Severity if an issue should be reported for the dependency or <code>null</code> if no issue should be created.
    */
   public Severity severity(Dependency dependency) {
-    if (dependency.getAvailability() == Availability.None) {
+    if (dependency.getAvailability() == Availability.None || dependency.getAvailability() == null) {
       return null;
     }
     Artifact artifact = asArtifact(dependency);
