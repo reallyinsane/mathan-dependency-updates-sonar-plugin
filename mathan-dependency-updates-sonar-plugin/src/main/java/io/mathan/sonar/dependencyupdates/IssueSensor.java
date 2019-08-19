@@ -79,7 +79,7 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
         context.newIssue()
             .forRule(RuleKey.of(Constants.REPOSITORY_KEY, Constants.RULE_KEY))
             .at(new DefaultIssueLocation()
-                //.on(context.module())
+                .on(context.project())
                 .on(context.fileSystem().inputFile(context.fileSystem().predicates().hasRelativePath("pom.xml")))
                 .message(formatDescription(dependency, dependencyManagement)))
             .overrideSeverity(severity)
