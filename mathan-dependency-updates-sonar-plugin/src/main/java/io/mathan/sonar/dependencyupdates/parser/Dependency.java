@@ -168,15 +168,17 @@ public class Dependency {
 
     /**
      * Creates the enum value for availability based on the status string for the dependency from the dependency-updates-report.
+     * Under rare circumstances the dependency-updates-report seems to provide <code>null</code> for the dependency status. In
+     * this case {@link Availability} is set to {@link Availability#None}
      */
-    public static Availability fromString(String name) {
+    public static Availability fromDependencyUpdatesReportStatus(String name) {
       Availability[] availabilities = Availability.values();
       for (Availability availability : availabilities) {
         if (name.equals(availability.name)) {
           return availability;
         }
       }
-      return null;
+      return Availability.None;
     }
   }
 

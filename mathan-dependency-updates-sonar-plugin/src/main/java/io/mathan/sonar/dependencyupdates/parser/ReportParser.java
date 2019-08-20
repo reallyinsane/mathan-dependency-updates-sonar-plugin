@@ -125,7 +125,7 @@ public class ReportParser {
       } else if ("majors".equals(nodeName)) {
         dependency.getMajors().addAll(processVersions(majorVersionsPattern, childCursor, "major"));
       } else if ("status".equals(nodeName)) {
-        dependency.setAvailability(Availability.fromString(StringUtils.trim(childCursor.collectDescendantText(true))));
+        dependency.setAvailability(Availability.fromDependencyUpdatesReportStatus(StringUtils.trim(childCursor.collectDescendantText(true))));
       }
     }
     if (dependency.getNext() != null && versionExclusionPattern.matcher(dependency.getNext()).matches()) {
