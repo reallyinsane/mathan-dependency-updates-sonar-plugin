@@ -89,6 +89,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     ratings.put(Range.between(11, 20), RATING_C);
     ratings.put(Range.between(21, 50), RATING_D);
     ratings.put(Range.between(51, Integer.MAX_VALUE), RATING_E);
+    mapping.put(range, ratings);
   }
 
 
