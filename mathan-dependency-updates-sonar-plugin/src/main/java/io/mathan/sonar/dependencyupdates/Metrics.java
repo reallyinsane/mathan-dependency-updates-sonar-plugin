@@ -202,7 +202,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     }
     context.<Double>newMeasure().forMetric(Metrics.PATCHES_RATIO).on(inputComponent).withValue(ratio).save();
     context.<Integer>newMeasure().forMetric(Metrics.PATCHES_RATING).on(inputComponent).withValue(
-        Math.toIntExact(calculateRating(ratio, Math.toIntExact(totalDependenciesWithPatches)))).save();
+        Math.toIntExact(calculateRating(Math.toIntExact(totalDependenciesWithPatches),analysis.all().size()))).save();
   }
 
   private static void calculatePatchesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
@@ -223,7 +223,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     }
     context.<Double>newMeasure().forMetric(Metrics.UPGRADES_RATIO).on(inputComponent).withValue(ratio).save();
     context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_RATING).on(inputComponent).withValue(
-        Math.toIntExact(calculateRating(ratio, Math.toIntExact(totalDependenciesWithUpgrades)))).save();
+        Math.toIntExact(calculateRating(Math.toIntExact(totalDependenciesWithUpgrades),analysis.all().size()))).save();
   }
 
   private static void calculateUpgradesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
@@ -231,10 +231,10 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(inputComponent).withValue(sum).save();
   }
 
-  static int calculateRating(double ratio, int total) {
+  static int calculateRating(int withLater, int total) {
     Range range = mapping.keySet().stream().filter(r -> r.contains(total)).findFirst().get();
     Map<Range<Integer>, Integer> ratings = mapping.get(range);
-    return ratings.get(ratings.keySet().stream().filter(r -> r.contains(total)).findFirst().get());
+    return ratings.get(ratings.keySet().stream().filter(r -> r.contains(withLater)).findFirst().get());
   }
 
   @Override
