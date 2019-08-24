@@ -74,7 +74,7 @@ public class DependencyUpdatesMeasureComputer implements MeasureComputer {
       ratio = 100 * count / total;
     }
     context.addMeasure(ratioMetric, ratio);
-    context.addMeasure(ratingMetric, Metrics.calculateRating(ratio, total));
+    context.addMeasure(ratingMetric, Metrics.calculateRating(count, total));
   }
 
   private void maxMeasure(MeasureComputerContext context, String metricKey) {
