@@ -29,6 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 import javax.xml.stream.XMLStreamException;
 import org.sonar.api.batch.fs.FileSystem;
+import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.Severity;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
@@ -76,14 +77,19 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
     for (Dependency dependency : dependencies) {
       Severity severity = filter.severity(dependency);
       if (severity != null) {
-        context.newIssue()
-            .forRule(RuleKey.of(Constants.REPOSITORY_KEY, Constants.RULE_KEY))
-            .at(new DefaultIssueLocation()
-                //.on(context.module())
-                .on(context.fileSystem().inputFile(context.fileSystem().predicates().hasRelativePath("pom.xml")))
-                .message(formatDescription(dependency, dependencyManagement)))
-            .overrideSeverity(severity)
-            .save();
+        InputFile component = context.fileSystem().inputFile(context.fileSystem().predicates().hasRelativePath("pom.xml"));
+        if (component == null) {
+          LOGGER.warn("Could not find pom.xml in %s", context.fileSystem().baseDir());
+        } else {
+          context.newIssue()
+              .forRule(RuleKey.of(Constants.REPOSITORY_KEY, Constants.RULE_KEY))
+              .at(new DefaultIssueLocation()
+                  //.on(context.module())
+                  .on(component)
+                  .message(formatDescription(dependency, dependencyManagement)))
+              .overrideSeverity(severity)
+              .save();
+        }
       }
     }
   }
