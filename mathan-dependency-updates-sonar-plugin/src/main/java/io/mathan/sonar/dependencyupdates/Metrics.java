@@ -98,7 +98,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setDirection(Metric.DIRECTION_NONE)
       .setQualitative(Boolean.FALSE)
       .setDomain(Metrics.DOMAIN)
-      .setHidden(true)
+      .setHidden(false)
       .create();
 
   static final Metric<Integer> PATCHES = new Metric.Builder(Metrics.KEY_PATCHES, "Dependencies to patch", ValueType.INT)
