@@ -46,6 +46,15 @@ public final class Constants {
   public static final String CONFIG_DISCRETE_MINOR_MAJOR = "sonar.dependencyUpdates.discreteMinorMajor";
   public static final Boolean CONFIG_DISCRETE_MINOR_MAJOR_DEFAULT = true;
 
+  static final String CONFIG_MEASURE_HIDE_RATIO = "sonar.dependencyUpdates.hide.ratio";
+  static final Boolean CONFIG_MEASURE_HIDE_RATIO_DEFAULT = false;
+  static final String CONFIG_MEASURE_HIDE_MISSED = "sonar.dependencyUpdates.hide.missed";
+  static final Boolean CONFIG_MEASURE_HIDE_MISSED_DEFAULT = false;
+  static final String CONFIG_MEASURE_HIDE_RATING = "sonar.dependencyUpdates.hide.rating";
+  static final Boolean CONFIG_MEASURE_HIDE_RATING_DEFAULT = false;
+
+
+
 
   public static final String REPOSITORY_KEY = "DependencyUpdates";
   public static final String LANGUAGE_KEY = "mathan";
@@ -54,6 +63,7 @@ public final class Constants {
   static final String SUB_CATEGORY_INCLUSIONS_EXCLUSIONS = "Inclusions/Exclusions";
   static final String SUB_CATEGORY_OVERRIDES = "Overrides";
   static final String SUB_CATEGORY_VERSIONS = "Versions";
+  static final String SUB_CATEGORY_APPEARANCE = "Appearance";
 
   private Constants() {
   }

@@ -134,6 +134,27 @@ public class Configuration {
                 + " result would be 2 (1.1.2 and 1.2.0) and in case of 'false' 4 (all available versions).")
             .type(PropertyType.BOOLEAN)
             .defaultValue("true")
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_MEASURE_HIDE_RATIO)
+            .subCategory(Constants.SUB_CATEGORY_APPEARANCE)
+            .name("Hide ratio measures")
+            .description("Flag indicating whether the ratio measure for dependencies to update/upgrade will be hidden. (Change requires restart)")
+            .type(PropertyType.BOOLEAN)
+            .defaultValue(String.valueOf(Constants.CONFIG_MEASURE_HIDE_RATIO_DEFAULT))
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_MEASURE_HIDE_RATING)
+            .subCategory(Constants.SUB_CATEGORY_APPEARANCE)
+            .name("Hide rating measures")
+            .description("Flag indicating whether the rating measure for dependencies to update/upgrade will be hidden. (Change requires restart)")
+            .type(PropertyType.BOOLEAN)
+            .defaultValue(String.valueOf(Constants.CONFIG_MEASURE_HIDE_RATING_DEFAULT))
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_MEASURE_HIDE_MISSED)
+            .subCategory(Constants.SUB_CATEGORY_APPEARANCE)
+            .name("Hide missed measures")
+            .description("Flag indicating whether the total number of missed patches/upgrades measure will be hidden. (Change requires restart)")
+            .type(PropertyType.BOOLEAN)
+            .defaultValue(String.valueOf(Constants.CONFIG_MEASURE_HIDE_MISSED_DEFAULT))
             .build()
     );
   }

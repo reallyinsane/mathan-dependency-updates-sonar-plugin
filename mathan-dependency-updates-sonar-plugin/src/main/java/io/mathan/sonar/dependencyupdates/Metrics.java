@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.Range;
 import org.sonar.api.batch.fs.InputComponent;
 import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.measures.Metric.ValueType;
 
@@ -92,7 +93,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
   }
 
 
-  private static final Metric<Integer> DEPENDENCIES = new Metric.Builder(Metrics.KEY_DEPENDENCIES, "Total dependencies", ValueType.INT)
+  private static final Metric<Integer> DEPENDENCIES = new Metric.Builder(Metrics.KEY_DEPENDENCIES, "Dependencies total", ValueType.INT)
       .setDescription("Total number of dependencies")
       .setDirection(Metric.DIRECTION_NONE)
       .setQualitative(Boolean.FALSE)
@@ -164,7 +165,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  private static final Metric<Integer> UPGRADES_REPEATEDLY = new Metric.Builder(Metrics.KEY_UPGRADES_MISSED, "Upgrades missed", ValueType.INT)
+  private static final Metric<Integer> UPGRADES_MISSED = new Metric.Builder(Metrics.KEY_UPGRADES_MISSED, "Upgrades missed", ValueType.INT)
       .setDescription("Total number of released upgrades missed")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
@@ -189,6 +190,17 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setWorstValue(5.0)
       .setBestValue(1.0)
       .create();
+  private final Configuration configuration;
+
+  public Metrics(Configuration configuration) {
+    this.configuration = configuration;
+    PATCHES_RATIO.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_RATIO).orElse(Constants.CONFIG_MEASURE_HIDE_RATIO_DEFAULT));
+    UPGRADES_RATIO.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_RATIO).orElse(Constants.CONFIG_MEASURE_HIDE_RATIO_DEFAULT));
+    PATCHES_RATING.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_RATING).orElse(Constants.CONFIG_MEASURE_HIDE_RATING_DEFAULT));
+    UPGRADES_RATING.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_RATING).orElse(Constants.CONFIG_MEASURE_HIDE_RATING_DEFAULT));
+    PATCHES_MISSED.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_MISSED).orElse(Constants.CONFIG_MEASURE_HIDE_MISSED_DEFAULT));
+    UPGRADES_MISSED.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_MISSED).orElse(Constants.CONFIG_MEASURE_HIDE_MISSED_DEFAULT));
+  }
 
   /**
    * Calculates all metrics provided by this Sonar-Plugin based on the given Analysis.
@@ -259,7 +271,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
 
   private static void calculateUpgradesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
     int sum = Math.toIntExact(analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpgradeCount)).getSum());
-    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(inputComponent).withValue(sum).save();
+    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_MISSED).on(inputComponent).withValue(sum).save();
   }
 
   static int calculateRating(int withLater, int total) {
@@ -281,7 +293,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
         Metrics.UPGRADES,
         Metrics.UPGRADES_DATA,
         Metrics.UPGRADES_RATIO,
-        Metrics.UPGRADES_REPEATEDLY,
+        Metrics.UPGRADES_MISSED,
         Metrics.UPGRADES_RATING
     );
   }
