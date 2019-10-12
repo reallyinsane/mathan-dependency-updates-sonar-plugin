@@ -79,11 +79,17 @@ public class Dependency {
     return minors;
   }
 
-  public int getUpdates() {
+  public List<String> getUpgrades() {
+    List<String> upgrades = new ArrayList<>(this.minors);
+    upgrades.addAll(majors);
+    return upgrades;
+  }
+
+  public int getUpdateCount() {
     return incrementals.size();
   }
 
-  public int getUpgrades() {
+  public int getUpgradeCount() {
     return minors.size() + majors.size();
   }
 
@@ -190,5 +196,12 @@ public class Dependency {
   @Override
   public String toString() {
     return String.format("%s:%s:%s", groupId, artifactId, version);
+  }
+
+  /**
+   * Creates a String identifying this dependency in format <i>groupId</i>:<i>artifactId</i>:<i>version</i>:<i>updates</i>:<i>upgrades</i>
+   */
+  public String toDataString() {
+    return String.format("%s:%s:%s:%s:%s", groupId, artifactId, version, getUpdateCount(), getUpgradeCount());
   }
 }
