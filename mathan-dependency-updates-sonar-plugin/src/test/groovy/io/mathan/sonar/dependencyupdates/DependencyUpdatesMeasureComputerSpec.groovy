@@ -42,7 +42,7 @@ class DependencyUpdatesMeasureComputerSpec extends Specification {
     MeasureComputer.MeasureComputerContext context = context(dependenciesA, dependenciesB)
     computer.compute(context)
     assert context.getMeasure(Metrics.KEY_DEPENDENCIES).intValue == dependencies
-    assert sorted(dependenciesData).equals(sorted(context.getMeasure(Metrics.KEY_DEPENDENCIES_DATA).stringValue))
+    assert sorted(dependenciesData) == sorted(context.getMeasure(Metrics.KEY_DEPENDENCIES_DATA).stringValue)
     where:
     dependenciesA | dependenciesB | dependencies | dependenciesData
     ""            | ""            | 0            | ""
@@ -77,7 +77,7 @@ class DependencyUpdatesMeasureComputerSpec extends Specification {
     assert context.getMeasure(Metrics.KEY_PATCHES_RATIO).doubleValue == patchesRatio
     assert context.getMeasure(Metrics.KEY_PATCHES_RATING).intValue == patchesRating
     assert context.getMeasure(Metrics.KEY_PATCHES_MISSED).intValue == patchesMissed
-    assert sorted(patchesData).equals(sorted(context.getMeasure(Metrics.KEY_PATCHES_DATA).stringValue))
+    assert sorted(patchesData) == sorted(context.getMeasure(Metrics.KEY_PATCHES_DATA).stringValue)
     where:
     dependenciesA | dependenciesB | patchesA    | patchesB    | patches | patchesData           | patchesRatio | patchesRating | patchesMissed
     ""            | ""            | ""          | ""          | 0       | ""                    | 0.0          | 1             | 0
@@ -112,7 +112,7 @@ class DependencyUpdatesMeasureComputerSpec extends Specification {
     assert context.getMeasure(Metrics.KEY_UPGRADES_RATIO).doubleValue == upgradesRatio
     assert context.getMeasure(Metrics.KEY_UPGRADES_RATING).intValue == upgradesRating
     assert context.getMeasure(Metrics.KEY_UPGRADES_MISSED).intValue == upgradesMissed
-    assert sorted(upgradesData).equals(sorted(context.getMeasure(Metrics.KEY_UPGRADES_DATA).stringValue))
+    assert sorted(upgradesData) == sorted(context.getMeasure(Metrics.KEY_UPGRADES_DATA).stringValue)
     where:
     dependenciesA | dependenciesB | upgradesA   | upgradesB   | upgrades | upgradesData          | upgradesRatio | upgradesRating | upgradesMissed
     ""            | ""            | ""          | ""          | 0        | ""                    | 0.0           | 1              | 0
