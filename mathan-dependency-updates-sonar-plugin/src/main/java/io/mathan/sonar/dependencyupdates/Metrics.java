@@ -28,26 +28,26 @@ import java.util.stream.Collectors;
 import org.apache.commons.lang3.Range;
 import org.sonar.api.batch.fs.InputComponent;
 import org.sonar.api.batch.sensor.SensorContext;
+import org.sonar.api.config.Configuration;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.measures.Metric.ValueType;
-import org.sonar.api.utils.log.Logger;
-import org.sonar.api.utils.log.Loggers;
 
 public final class Metrics implements org.sonar.api.measures.Metrics {
 
-  private static final Logger LOGGER = Loggers.get(Metrics.class);
-
   private static final String DOMAIN = "Dependency Updates";
 
-  public static final String KEY_DEPENDENCIES = "metrics.dependencies";
-  public static final String KEY_PATCHES = "metrics.patches";
-  public static final String KEY_PATCHES_RATIO = "metrics.patches.ratio";
-  public static final String KEY_PATCHES_MISSED = "metrics.patches.repeatedly";
-  public static final String KEY_PATCHES_RATING = "metrios.patches.rating";
-  public static final String KEY_UPGRADES = "metrics.upgrades";
-  public static final String KEY_UPGRADES_RATIO = "metrics.upgrades.ratio";
-  public static final String KEY_UPGRADES_MISSED = "metrics.upgrades.repeatedly";
-  public static final String KEY_UPGRADES_RATING = "metrios.upgrades.rating";
+  static final String KEY_DEPENDENCIES = "metrics.dependencies";
+  static final String KEY_DEPENDENCIES_DATA = "metrics.dependencies.data";
+  static final String KEY_PATCHES = "metrics.patches";
+  static final String KEY_PATCHES_DATA = "metrics.patches.data";
+  static final String KEY_PATCHES_RATIO = "metrics.patches.ratio";
+  static final String KEY_PATCHES_MISSED = "metrics.patches.repeatedly";
+  static final String KEY_PATCHES_RATING = "metrios.patches.rating";
+  static final String KEY_UPGRADES = "metrics.upgrades";
+  static final String KEY_UPGRADES_DATA = "metrics.upgrades.data";
+  static final String KEY_UPGRADES_RATIO = "metrics.upgrades.ratio";
+  static final String KEY_UPGRADES_MISSED = "metrics.upgrades.repeatedly";
+  static final String KEY_UPGRADES_RATING = "metrios.upgrades.rating";
 
   private static final int RATING_A = 1;
   private static final int RATING_B = 2;
@@ -93,7 +93,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
   }
 
 
-  static final Metric<Integer> DEPENDENCIES = new Metric.Builder(Metrics.KEY_DEPENDENCIES, "Total dependencies", ValueType.INT)
+  private static final Metric<Integer> DEPENDENCIES = new Metric.Builder(Metrics.KEY_DEPENDENCIES, "Dependencies total", ValueType.INT)
       .setDescription("Total number of dependencies")
       .setDirection(Metric.DIRECTION_NONE)
       .setQualitative(Boolean.FALSE)
@@ -101,7 +101,15 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setHidden(false)
       .create();
 
-  static final Metric<Integer> PATCHES = new Metric.Builder(Metrics.KEY_PATCHES, "Dependencies to patch", ValueType.INT)
+  private static final Metric<String> DEPENDENCIES_DATA = new Metric.Builder(Metrics.KEY_DEPENDENCIES_DATA, "List of dependencies", ValueType.STRING)
+      .setDescription("All dependencies concatenated in a list")
+      .setDirection(Metric.DIRECTION_NONE)
+      .setQualitative(false)
+      .setDomain(Metrics.DOMAIN)
+      .setHidden(true)
+      .create();
+
+  private static final Metric<Integer> PATCHES = new Metric.Builder(Metrics.KEY_PATCHES, "Dependencies to patch", ValueType.INT)
       .setDescription("Dependencies with patches to apply")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
@@ -109,7 +117,15 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Double> PATCHES_RATIO = new Metric.Builder(Metrics.KEY_PATCHES_RATIO, "Dependencies to patch (Ratio)", ValueType.PERCENT)
+  private static final Metric<String> PATCHES_DATA = new Metric.Builder(Metrics.KEY_PATCHES_DATA, "List of patches", ValueType.STRING)
+      .setDescription("All dependencies to patch concatenated in a list")
+      .setDirection(Metric.DIRECTION_NONE)
+      .setQualitative(false)
+      .setDomain(Metrics.DOMAIN)
+      .setHidden(true)
+      .create();
+
+  private static final Metric<Double> PATCHES_RATIO = new Metric.Builder(Metrics.KEY_PATCHES_RATIO, "Dependencies to patch (Ratio)", ValueType.PERCENT)
       .setDescription("Ratio of dependencies with patches")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
@@ -117,7 +133,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Integer> PATCHES_MISSED = new Metric.Builder(Metrics.KEY_PATCHES_MISSED, "Patches missed", ValueType.INT)
+  private static final Metric<Integer> PATCHES_MISSED = new Metric.Builder(Metrics.KEY_PATCHES_MISSED, "Patches missed", ValueType.INT)
       .setDescription("Total number of releases patches missed")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
@@ -125,7 +141,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Integer> UPGRADES = new Metric.Builder(Metrics.KEY_UPGRADES, "Dependencies to upgrade", ValueType.INT)
+  private static final Metric<Integer> UPGRADES = new Metric.Builder(Metrics.KEY_UPGRADES, "Dependencies to upgrade", ValueType.INT)
       .setDescription("Dependencies with upgrades to apply")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
@@ -133,7 +149,15 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Double> UPGRADES_RATIO = new Metric.Builder(Metrics.KEY_UPGRADES_RATIO, "Dependencies to upgrade (Ratio)", ValueType.PERCENT)
+  private static final Metric<String> UPGRADES_DATA = new Metric.Builder(Metrics.KEY_UPGRADES_DATA, "List of upgrades", ValueType.STRING)
+      .setDescription("All dependencies to upgrade concatenated in a list")
+      .setDirection(Metric.DIRECTION_NONE)
+      .setQualitative(false)
+      .setDomain(Metrics.DOMAIN)
+      .setHidden(true)
+      .create();
+
+  private static final Metric<Double> UPGRADES_RATIO = new Metric.Builder(Metrics.KEY_UPGRADES_RATIO, "Dependencies to upgrade (Ratio)", ValueType.PERCENT)
       .setDescription("Ratio of dependencies with upgrades")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
@@ -141,7 +165,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Integer> UPGRADES_REPEATEDLY = new Metric.Builder(Metrics.KEY_UPGRADES_MISSED, "Upgrades missed", ValueType.INT)
+  private static final Metric<Integer> UPGRADES_MISSED = new Metric.Builder(Metrics.KEY_UPGRADES_MISSED, "Upgrades missed", ValueType.INT)
       .setDescription("Total number of released upgrades missed")
       .setDirection(Metric.DIRECTION_WORST)
       .setQualitative(Boolean.TRUE)
@@ -149,7 +173,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(0.0)
       .create();
 
-  static final Metric<Integer> PATCHES_RATING = new Metric.Builder(Metrics.KEY_PATCHES_RATING, "Patch Maintenance", ValueType.RATING)
+  private static final Metric<Integer> PATCHES_RATING = new Metric.Builder(Metrics.KEY_PATCHES_RATING, "Patch Maintenance", ValueType.RATING)
       .setDescription("Rating of the maintenance of applying patches")
       .setDirection(Metric.DIRECTION_BETTER)
       .setQualitative(Boolean.TRUE)
@@ -158,7 +182,7 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setBestValue(1.0)
       .create();
 
-  static final Metric<Integer> UPGRADES_RATING = new Metric.Builder(Metrics.KEY_UPGRADES_RATING, "Upgrade Maintenance", ValueType.RATING)
+  private static final Metric<Integer> UPGRADES_RATING = new Metric.Builder(Metrics.KEY_UPGRADES_RATING, "Upgrade Maintenance", ValueType.RATING)
       .setDescription("Rating of the maintenance of applying upgrades")
       .setDirection(Metric.DIRECTION_BETTER)
       .setQualitative(Boolean.TRUE)
@@ -166,11 +190,22 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
       .setWorstValue(5.0)
       .setBestValue(1.0)
       .create();
+  private final Configuration configuration;
+
+  public Metrics(Configuration configuration) {
+    this.configuration = configuration;
+    PATCHES_RATIO.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_RATIO).orElse(Constants.CONFIG_MEASURE_HIDE_RATIO_DEFAULT));
+    UPGRADES_RATIO.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_RATIO).orElse(Constants.CONFIG_MEASURE_HIDE_RATIO_DEFAULT));
+    PATCHES_RATING.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_RATING).orElse(Constants.CONFIG_MEASURE_HIDE_RATING_DEFAULT));
+    UPGRADES_RATING.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_RATING).orElse(Constants.CONFIG_MEASURE_HIDE_RATING_DEFAULT));
+    PATCHES_MISSED.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_MISSED).orElse(Constants.CONFIG_MEASURE_HIDE_MISSED_DEFAULT));
+    UPGRADES_MISSED.setHidden(configuration.getBoolean(Constants.CONFIG_MEASURE_HIDE_MISSED).orElse(Constants.CONFIG_MEASURE_HIDE_MISSED_DEFAULT));
+  }
 
   /**
    * Calculates all metrics provided by this Sonar-Plugin based on the given Analysis.
    */
-  public static void calculateMetricsModule(SensorContext context, Analysis analysis) {
+  static void calculateMetricsModule(SensorContext context, Analysis analysis) {
     calculateMetrics(context, context.fileSystem().inputFile(context.fileSystem().predicates().hasRelativePath("pom.xml")), analysis);
   }
 
@@ -183,10 +218,18 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
     calculateUpgrades(context, inputComponent, analysis);
     calculateUpgradesRatio(context, inputComponent, analysis);
     calculateUpgradesMissed(context, inputComponent, analysis);
+    calculateData(context, inputComponent, Metrics.DEPENDENCIES_DATA, analysis.all());
+    calculateData(context, inputComponent, Metrics.PATCHES_DATA, analysis.all().stream().filter(dependency -> dependency.getUpdateCount() > 0).collect(Collectors.toList()));
+    calculateData(context, inputComponent, Metrics.UPGRADES_DATA, analysis.all().stream().filter(dependency -> dependency.getUpgradeCount() > 0).collect(Collectors.toList()));
   }
 
   private static void calculateDependencies(SensorContext context, InputComponent inputComponent, Analysis analysis) {
     context.<Integer>newMeasure().forMetric(Metrics.DEPENDENCIES).on(inputComponent).withValue(analysis.all().size()).save();
+  }
+
+  private static void calculateData(SensorContext context, InputComponent inputComponent, Metric<String> metric, List<Dependency> dependencies) {
+    String dependenciesList = dependencies.stream().map(Dependency::toDataString).collect(Collectors.joining(","));
+    context.<String>newMeasure().forMetric(metric).on(inputComponent).withValue(dependenciesList).save();
   }
 
   private static void calculatePatches(SensorContext context, InputComponent inputComponent, Analysis analysis) {
@@ -206,18 +249,18 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
   }
 
   private static void calculatePatchesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-    int sum = Math.toIntExact(analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpdates)).getSum());
+    int sum = Math.toIntExact(analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpdateCount)).getSum());
     context.<Integer>newMeasure().forMetric(Metrics.PATCHES_MISSED).on(inputComponent).withValue(sum).save();
   }
 
   private static void calculateUpgrades(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-    int count = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count());
+    int count = Math.toIntExact(analysis.all().stream().filter(dependency -> dependency.getUpgradeCount() > 0).count());
     context.<Integer>newMeasure().forMetric(Metrics.UPGRADES).on(inputComponent).withValue(count).save();
   }
 
   private static void calculateUpgradesRatio(SensorContext context, InputComponent inputComponent, Analysis analysis) {
     double ratio = 0;
-    long totalDependenciesWithUpgrades = analysis.all().stream().filter(dependency -> dependency.getUpgrades() > 0).count();
+    long totalDependenciesWithUpgrades = analysis.all().stream().filter(dependency -> dependency.getUpgradeCount() > 0).count();
     if (analysis.all().size() > 0) {
       ratio = 100.0 * totalDependenciesWithUpgrades / analysis.all().size();
     }
@@ -227,8 +270,8 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
   }
 
   private static void calculateUpgradesMissed(SensorContext context, InputComponent inputComponent, Analysis analysis) {
-    int sum = Math.toIntExact(analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpgrades)).getSum());
-    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_REPEATEDLY).on(inputComponent).withValue(sum).save();
+    int sum = Math.toIntExact(analysis.all().stream().collect(Collectors.summarizingInt(Dependency::getUpgradeCount)).getSum());
+    context.<Integer>newMeasure().forMetric(Metrics.UPGRADES_MISSED).on(inputComponent).withValue(sum).save();
   }
 
   static int calculateRating(int withLater, int total) {
@@ -241,13 +284,16 @@ public final class Metrics implements org.sonar.api.measures.Metrics {
   public List<Metric> getMetrics() {
     return Arrays.asList(
         Metrics.DEPENDENCIES,
+        Metrics.DEPENDENCIES_DATA,
         Metrics.PATCHES,
+        Metrics.PATCHES_DATA,
         Metrics.PATCHES_RATIO,
         Metrics.PATCHES_MISSED,
         Metrics.PATCHES_RATING,
         Metrics.UPGRADES,
+        Metrics.UPGRADES_DATA,
         Metrics.UPGRADES_RATIO,
-        Metrics.UPGRADES_REPEATEDLY,
+        Metrics.UPGRADES_MISSED,
         Metrics.UPGRADES_RATING
     );
   }

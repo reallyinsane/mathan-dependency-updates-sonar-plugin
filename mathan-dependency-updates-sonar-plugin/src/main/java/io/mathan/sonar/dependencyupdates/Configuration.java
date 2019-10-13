@@ -47,6 +47,7 @@ public class Configuration {
             .options(Severity.ALL)
             .defaultValue(Constants.CONFIG_UPDATE_INCREMENTAL_DEFAULT)
             .type(PropertyType.SINGLE_SELECT_LIST)
+            .index(1)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_UPDATE_MINOR)
             .subCategory(Constants.SUB_CATEGORY_DEFAULT_SEVERITIES)
@@ -55,6 +56,7 @@ public class Configuration {
             .options(Severity.ALL)
             .defaultValue(Constants.CONFIG_UPDATE_MINOR_DEFAULT)
             .type(PropertyType.SINGLE_SELECT_LIST)
+            .index(2)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_UPDATE_MAJOR)
             .subCategory(Constants.SUB_CATEGORY_DEFAULT_SEVERITIES)
@@ -63,6 +65,7 @@ public class Configuration {
             .options(Severity.ALL)
             .defaultValue(Constants.CONFIG_UPDATE_MAJOR_DEFAULT)
             .type(PropertyType.SINGLE_SELECT_LIST)
+            .index(3)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_INCLUSIONS)
             .subCategory(Constants.SUB_CATEGORY_INCLUSIONS_EXCLUSIONS)
@@ -72,6 +75,7 @@ public class Configuration {
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
             .defaultValue("")
             .type(PropertyType.STRING)
+            .index(1)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_EXCLUSIONS)
             .subCategory(Constants.SUB_CATEGORY_INCLUSIONS_EXCLUSIONS)
@@ -81,6 +85,7 @@ public class Configuration {
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
             .defaultValue("")
             .type(PropertyType.STRING)
+            .index(2)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_INFO)
             .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
@@ -88,6 +93,7 @@ public class Configuration {
             .description("Whitelist of dependencies whose issue severity will be overridden with INFO. The filter syntax is"
                 + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .index(1)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_MINOR)
             .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
@@ -95,6 +101,7 @@ public class Configuration {
             .description("Whitelist of dependencies whose issue severity will be overridden with MINOR. The filter syntax is"
                 + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .index(2)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_MAJOR)
             .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
@@ -102,6 +109,7 @@ public class Configuration {
             .description("Whitelist of dependencies whose issue severity will be overridden with MAJOR. The filter syntax is"
                 + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .index(3)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_CRITICAL)
             .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
@@ -109,6 +117,7 @@ public class Configuration {
             .description("Whitelist of dependencies whose issue severity will be overridden with CRITICAL. The filter syntax is"
                 + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .index(4)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_OVERRIDE_BLOCKER)
             .subCategory(Constants.SUB_CATEGORY_OVERRIDES)
@@ -116,6 +125,7 @@ public class Configuration {
             .description("Whitelist of dependencies whose issue severity will be overridden with BLOCKER. The filter syntax is"
                 + " [groupId]:[artifactId]:[type]:[version] where each pattern segment is optional and supports full"
                 + " and partial * wildcards. Ab empty pattern segment is treated as an implicit wildcard *.")
+            .index(5)
             .build(),
         PropertyDefinition.builder(Constants.CONFIG_VERSION_EXCLUSION_REGEX)
             .subCategory(Constants.SUB_CATEGORY_VERSIONS)
@@ -134,6 +144,27 @@ public class Configuration {
                 + " result would be 2 (1.1.2 and 1.2.0) and in case of 'false' 4 (all available versions).")
             .type(PropertyType.BOOLEAN)
             .defaultValue("true")
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_MEASURE_HIDE_RATIO)
+            .subCategory(Constants.SUB_CATEGORY_APPEARANCE)
+            .name("Hide ratio measures")
+            .description("Flag indicating whether the ratio measure for dependencies to update/upgrade will be hidden. (Change requires restart)")
+            .type(PropertyType.BOOLEAN)
+            .defaultValue(String.valueOf(Constants.CONFIG_MEASURE_HIDE_RATIO_DEFAULT))
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_MEASURE_HIDE_RATING)
+            .subCategory(Constants.SUB_CATEGORY_APPEARANCE)
+            .name("Hide rating measures")
+            .description("Flag indicating whether the rating measure for dependencies to update/upgrade will be hidden. (Change requires restart)")
+            .type(PropertyType.BOOLEAN)
+            .defaultValue(String.valueOf(Constants.CONFIG_MEASURE_HIDE_RATING_DEFAULT))
+            .build(),
+        PropertyDefinition.builder(Constants.CONFIG_MEASURE_HIDE_MISSED)
+            .subCategory(Constants.SUB_CATEGORY_APPEARANCE)
+            .name("Hide missed measures")
+            .description("Flag indicating whether the total number of missed patches/upgrades measure will be hidden. (Change requires restart)")
+            .type(PropertyType.BOOLEAN)
+            .defaultValue(String.valueOf(Constants.CONFIG_MEASURE_HIDE_MISSED_DEFAULT))
             .build()
     );
   }

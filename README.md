@@ -2,9 +2,9 @@
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bcd46487fd2c4b79b930556275eec3d4)](https://www.codacy.com/app/reallyinsane/mathan-dependency-updates-sonar-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=reallyinsane/mathan-dependency-updates-sonar-plugin&amp;utm_campaign=Badge_Grade)
 <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/license-apache2-blue.svg"></a>
 
-# Dependency-Updates-Report Plugin for SonarQube 7.6 - 7.9
+# Dependency-Updates-Report Plugin for SonarQube 7.9
 
-Integrates [dependency updates report] from [versions-maven-plugin] into SonarQube v7.6 - 7.9.
+Integrates [dependency updates report] from [versions-maven-plugin] into SonarQube v7.9.
 
 ## About dependency updates report
 
@@ -25,10 +25,14 @@ Dependencies to patch | The number of dependencies with patches available (incre
 Dependencies to patch (Ratio) | The ratio of dependencies to patch. 
 Dependencies to upgrade | The number of dependencies with upgrades available (minor and/or major updates).
 Dependencies to upgrade (Ratio) | The ratio of dependencies to upgrade.
+Dependencies Total | The total number of dependencies.
 Patch maintenance | The rating of the patch maintenance (see below)
 Patches missed | The total number of patches missed. 
 Upgrade maintenance | The rating of the upgrade maintenance (see below)
 Upgrades missed | The total number of upgrades missed. 
+
+Please note that when computing measures on directory/module/project level measures for identical dependencies will be included only once. E.g. if a project contains two sub models having same
+dependency, this is included in the measure for each sub module. For the project the measure will not include the dependency multiple times (for each sub module) but only once.
 
 #### Maintenance rating
 
@@ -69,7 +73,18 @@ whose group id started with `org.apache.`, and `:::*-SNAPSHOT` would match all s
 
 ### Configuration properties
 
-This plugin offers various configuration options which are explained in the following categories.
+This plugin offers various configuration options which are explained in the following categories. The settings can be found under Administration > Configuration > General Settings > Dependency-Updates.
+
+#### Appearance
+
+By default 9 metrics will be reported. With the following configuration metrics for ratio, rating and missed patches/upgrades can be hidden. Changes to the setting in this category need a restart of
+ SonarQube to take effect.
+ 
+Property | Default
+---------|--------
+Hide missed measures | false
+Hide rating measures | false
+Hide ratio mesasures | false 
 
 #### Default Severity
 
