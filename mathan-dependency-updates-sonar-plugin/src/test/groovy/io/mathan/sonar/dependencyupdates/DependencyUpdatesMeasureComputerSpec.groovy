@@ -169,7 +169,7 @@ class DependencyUpdatesMeasureComputerSpec extends Specification {
    * Returns the list of dependencies sorted naturally.
    */
   String sorted(String dependencies) {
-    Set<String> sorted = new TreeSet<>();
+    Set<String> sorted = new TreeSet<>()
     Arrays.asList(dependencies.split(",")).forEach({ dependency -> sorted.add(dependency) })
     return String.join(",", sorted)
   }
