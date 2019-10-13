@@ -229,6 +229,7 @@
     <sonar.pluginClass>io.mathan.sonar.dependencyupdates.Plugin</sonar.pluginClass>
     <sonar.pluginName>Dependency-Updates</sonar.pluginName>
     <license.mailto>matthias@mathan.io</license.mailto>
+    <license.title>mathan-dependency-updates-sonar-plugin</license.title>
     <license.name>AL2</license.name>
     <license.owner>Matthias Hanisch</license.owner>
     <license.years>2019</license.years>
