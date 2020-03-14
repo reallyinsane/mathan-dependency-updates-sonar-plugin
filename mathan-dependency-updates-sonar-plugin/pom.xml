@@ -7,9 +7,7 @@
       <plugin>
         <!-- The gmavenplus plugin is used to compile Groovy code. To learn more about this plugin,
         visit https://github.com/groovy/GMavenPlus/wiki -->
-        <groupId>org.codehaus.gmavenplus</groupId>
         <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.6</version>
         <executions>
           <execution>
             <goals>
@@ -17,78 +15,23 @@
             </goals>
           </execution>
         </executions>
+        <groupId>org.codehaus.gmavenplus</groupId>
+        <version>1.6</version>
       </plugin>
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <version>2.22.2</version>
         <configuration>
           <includes>
             <include>**/*Test.java</include>
             <include>**/*Spec.java</include>
           </includes>
         </configuration>
-
-      </plugin>
-      <plugin>
-        <artifactId>nexus-staging-maven-plugin</artifactId>
-        <configuration>
-          <autoReleaseAfterClose>true</autoReleaseAfterClose>
-          <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-          <serverId>ossrh</serverId>
-        </configuration>
-        <extensions>true</extensions>
-        <groupId>org.sonatype.plugins</groupId>
-        <version>1.6.7</version>
-      </plugin>
-      <plugin>
-        <artifactId>flatten-maven-plugin</artifactId>
-        <configuration>
-          <flattenMode>ossrh</flattenMode>
-          <pomElements>
-            <parent>remove</parent>
-          </pomElements>
-        </configuration>
-        <executions>
-          <!-- enable flattening -->
-          <execution>
-            <goals>
-              <goal>flatten</goal>
-            </goals>
-            <id>flatten</id>
-            <phase>process-resources</phase>
-          </execution>
-          <!-- ensure proper cleanup -->
-          <execution>
-            <goals>
-              <goal>clean</goal>
-            </goals>
-            <id>flatten.clean</id>
-            <phase>clean</phase>
-          </execution>
-        </executions>
-        <groupId>org.codehaus.mojo</groupId>
-        <version>1.1.0</version>
+        <groupId>org.apache.maven.plugins</groupId>
       </plugin>
     </plugins>
   </build>
   <artifactId>mathan-dependency-updates-sonar-plugin</artifactId>
   <packaging>sonar-plugin</packaging>
-  <description>A plugin for SonarQube providing measures and generating issues for dependency updates reported by the maven-versions-plugin.</description>
-  <distributionManagement>
-    <snapshotRepository>
-      <id>ossrh</id>
-      <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </snapshotRepository>
-  </distributionManagement>
-  <licenses>
-    <license>
-      <distribution>repo</distribution>
-      <name>AL2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-  <name>Mathan Dependency-Updates Sonar Plugin</name>
   <dependencies>
     <dependency>
       <groupId>org.sonarsource.sonarqube</groupId>
@@ -169,70 +112,15 @@
   </dependencies>
 
   <parent>
-    <groupId>io.mathan.sonar</groupId>
     <artifactId>mathan-dependency-updates-sonar-plugin-reactor</artifactId>
-    <version>7.9.0</version>
+    <groupId>io.mathan.sonar</groupId>
     <relativePath>..</relativePath>
+    <version>7.9.2</version>
   </parent>
-  <profiles>
-    <profile>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <id>attach-javadocs</id>
-              </execution>
-            </executions>
-            <groupId>org.apache.maven.plugins</groupId>
-            <version>2.10.3</version>
-          </plugin>
-          <plugin>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <id>attach-sources</id>
-              </execution>
-            </executions>
-            <groupId>org.apache.maven.plugins</groupId>
-            <version>3.0.0</version>
-          </plugin>
-          <plugin>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-              </execution>
-            </executions>
-            <groupId>org.apache.maven.plugins</groupId>
-            <version>1.5</version>
-          </plugin>
-        </plugins>
-      </build>
-      <id>release</id>
-    </profile>
-  </profiles>
   <properties>
-    <sonar.version>7.9.1</sonar.version>
-    <!-- Configuration for sonar-packaging-maven-plugin -->
     <sonar.pluginClass>io.mathan.sonar.dependencyupdates.Plugin</sonar.pluginClass>
+    <!-- Configuration for sonar-packaging-maven-plugin -->
     <sonar.pluginName>Dependency-Updates</sonar.pluginName>
-    <license.mailto>matthias@mathan.io</license.mailto>
-    <license.title>mathan-dependency-updates-sonar-plugin</license.title>
-    <license.name>AL2</license.name>
-    <license.owner>Matthias Hanisch</license.owner>
-    <license.years>2019</license.years>
+    <sonar.version>7.9.2</sonar.version>
   </properties>
-  <url>https://github.com/reallyinsane/mathan-dependency-updates-sonar-plugin</url>
 </project>
