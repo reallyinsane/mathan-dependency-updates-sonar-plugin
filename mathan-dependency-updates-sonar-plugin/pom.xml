@@ -5,7 +5,7 @@
   <parent>
     <groupId>io.mathan.sonar</groupId>
     <artifactId>mathan-dependency-updates-sonar-plugin-reactor</artifactId>
-    <version>7.9.0-SNAPSHOT</version>
+    <version>7.9.2-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent>
   <artifactId>mathan-dependency-updates-sonar-plugin</artifactId>
@@ -90,7 +90,7 @@
   </dependencies>
 
   <properties>
-    <sonar.version>7.9.1</sonar.version>
+    <sonar.version>7.9.2</sonar.version>
     <!-- Configuration for sonar-packaging-maven-plugin -->
     <sonar.pluginClass>io.mathan.sonar.dependencyupdates.Plugin</sonar.pluginClass>
     <sonar.pluginName>Dependency-Updates</sonar.pluginName>
@@ -120,9 +120,7 @@
             <include>**/*Spec.java</include>
           </includes>
         </configuration>
-
       </plugin>
     </plugins>
   </build>
-
 </project>
