@@ -115,12 +115,12 @@
     <artifactId>mathan-dependency-updates-sonar-plugin-reactor</artifactId>
     <groupId>io.mathan.sonar</groupId>
     <relativePath>..</relativePath>
-    <version>7.9.2</version>
+    <version>8.0.0-SNAPSHOT</version>
   </parent>
   <properties>
     <sonar.pluginClass>io.mathan.sonar.dependencyupdates.Plugin</sonar.pluginClass>
     <!-- Configuration for sonar-packaging-maven-plugin -->
     <sonar.pluginName>Dependency-Updates</sonar.pluginName>
-    <sonar.version>7.9.2</sonar.version>
+    <sonar.version>8.0</sonar.version>
   </properties>
 </project>

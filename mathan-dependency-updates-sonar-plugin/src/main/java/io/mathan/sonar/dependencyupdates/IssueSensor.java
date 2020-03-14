@@ -33,7 +33,8 @@ import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.Severity;
 import org.sonar.api.batch.sensor.SensorContext;
 import org.sonar.api.batch.sensor.SensorDescriptor;
-import org.sonar.api.batch.sensor.issue.internal.DefaultIssueLocation;
+import org.sonar.api.batch.sensor.issue.NewIssue;
+import org.sonar.api.batch.sensor.issue.NewIssueLocation;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.scan.filesystem.PathResolver;
 import org.sonar.api.utils.log.Logger;
@@ -81,9 +82,12 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
         if (component == null) {
           LOGGER.warn("Could not find pom.xml in %s", context.fileSystem().baseDir());
         } else {
-          context.newIssue()
+          NewIssue issue = context.newIssue();
+          NewIssueLocation location = issue.newLocation();
+
+          issue
               .forRule(RuleKey.of(Constants.REPOSITORY_KEY, Constants.RULE_KEY))
-              .at(new DefaultIssueLocation()
+              .at(location
                   //.on(context.module())
                   .on(component)
                   .message(formatDescription(dependency, dependencyManagement)))

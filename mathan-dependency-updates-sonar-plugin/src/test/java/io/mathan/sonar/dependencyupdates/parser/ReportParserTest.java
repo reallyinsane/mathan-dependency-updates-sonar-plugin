@@ -17,29 +17,37 @@
  */
 package io.mathan.sonar.dependencyupdates.parser;
 
+import io.mathan.sonar.dependencyupdates.Constants;
 import io.mathan.sonar.dependencyupdates.parser.Dependency.Availability;
 import io.mathan.sonar.dependencyupdates.report.XmlReportFile;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.sonar.api.config.Configuration;
-import org.sonar.api.config.Settings;
-import org.sonar.api.config.internal.ConfigurationBridge;
-import org.sonar.api.config.internal.MapSettings;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ReportParserTest {
 
   private static final String GROUP_ID = "io.mathan.test";
 
+  @Mock
+  private Configuration configuration;
+
   @Test
   public void parseReport() throws Exception {
+    Mockito.doReturn(Optional.of(Constants.CONFIG_VERSION_EXCLUSION_REGEX_DEFAULT)).when(configuration).get(Constants.CONFIG_VERSION_EXCLUSION_REGEX);
+    Mockito.doReturn(Optional.of(Constants.CONFIG_DISCRETE_MINOR_MAJOR_DEFAULT)).when(configuration).getBoolean(Constants.CONFIG_DISCRETE_MINOR_MAJOR);
+
     InputStream inputStream = getClass().getClassLoader().getResourceAsStream("report/sample-dependency-updates-report.xml");
 
-    Settings settings = new MapSettings();
-    Configuration configuration = new ConfigurationBridge(settings);
     Analysis analysis = new ReportParser(configuration).parse(Arrays.asList((XmlReportFile) () -> inputStream));
 
     List<Dependency> dependencyManagements = analysis.getDependencyManagements();
