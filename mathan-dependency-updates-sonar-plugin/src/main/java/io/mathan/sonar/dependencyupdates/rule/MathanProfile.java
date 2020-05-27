@@ -26,6 +26,7 @@ public class MathanProfile implements BuiltInQualityProfilesDefinition {
   @Override
   public void define(Context context) {
     NewBuiltInQualityProfile dependencyCheckWay = context.createBuiltInQualityProfile("mathan", Constants.LANGUAGE_KEY);
+    dependencyCheckWay.setDefault(true);
     dependencyCheckWay.activateRule(Constants.REPOSITORY_KEY, Constants.RULE_KEY);
     dependencyCheckWay.done();
   }
