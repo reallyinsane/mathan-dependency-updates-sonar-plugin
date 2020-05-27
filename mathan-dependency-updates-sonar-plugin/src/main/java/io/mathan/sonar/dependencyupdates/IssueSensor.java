@@ -80,7 +80,7 @@ public class IssueSensor implements org.sonar.api.batch.sensor.Sensor {
       if (severity != null) {
         InputFile component = context.fileSystem().inputFile(context.fileSystem().predicates().hasRelativePath("pom.xml"));
         if (component == null) {
-          LOGGER.warn("Could not find pom.xml in %s", context.fileSystem().baseDir());
+          LOGGER.warn("Could not find pom.xml in {}", context.fileSystem().baseDir());
         } else {
           NewIssue issue = context.newIssue();
           NewIssueLocation location = issue.newLocation();
