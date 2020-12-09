@@ -77,7 +77,7 @@
       <groupId>org.codehaus.groovy</groupId>
       <artifactId>groovy</artifactId>
       <scope>test</scope>
-      <version>3.0.2</version>
+      <version>3.0.7</version>
     </dependency>
     <dependency>
       <groupId>ch.qos.logback</groupId>
