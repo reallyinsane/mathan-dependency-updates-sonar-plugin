@@ -1,5 +1,5 @@
 ![Maven metadata URI](https://img.shields.io/maven-metadata/v/http/central.maven.org/maven2/io/mathan/sonar/mathan-dependency-updates-sonar-plugin/maven-metadata.xml.svg)
-[![Build Status](https://travis-ci.org/reallyinsane/mathan-dependency-updates-sonar-plugin.svg?branch=master)](https://travis-ci.org/reallyinsane/mathan-dependency-updates-sonar-plugin)
+![example branch parameter](https://github.com/reallyinsane/mathan-dependency-updates-sonar-plugin/actions/workflows/maven.yml/badge.svg)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/bcd46487fd2c4b79b930556275eec3d4)](https://www.codacy.com/app/reallyinsane/mathan-dependency-updates-sonar-plugin?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=reallyinsane/mathan-dependency-updates-sonar-plugin&amp;utm_campaign=Badge_Grade)
 <a href="https://opensource.org/licenses/Apache-2.0"><img src="https://img.shields.io/badge/license-apache2-blue.svg"></a>
 
